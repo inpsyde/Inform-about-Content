@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: \n"
+"X-Poedit-Country: \n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: inc/class.profile-settings.php:97
+#@ inform_about_content
+msgid "Inform about Content?"
+msgstr "Information über neue Inhalte?"
+
+#: inc/class.profile-settings.php:102
+#@ inform_about_content
+msgid "Posts subscription"
+msgstr "Artikelabonnement"
+
+#: inc/class.profile-settings.php:107
+#@ inform_about_content
+msgid "Inform about new posts via e-mail, without your own posts."
+msgstr "Informiere dich über neue Artikel via E-Mail, ohne deine eigenen Artikel."
+
+#: inc/class.profile-settings.php:112
+#@ inform_about_content
+msgid "Comments subscription"
+msgstr "Kommentarabonnement"
+
+#: inc/class.profile-settings.php:117
+#@ inform_about_content
+msgid "Inform about new comments via e-mail, without your own comments."
+msgstr "Informiere dich über neue Kommentare via E-Mail, ohne deine eigenen Kommentare."
+
+#. translators: plugin header field 'Name'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "Inform about Content"
+msgstr "Inform about Content - Information über Inhalt"
+
+#. translators: plugin header field 'PluginURI'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "http://inpsyde.com/"
+msgstr ""
+
+#. translators: plugin header field 'Author'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "Frank Bültge"
+msgstr ""
+
+#. translators: plugin header field 'AuthorURI'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "http://bueltge.de"
+msgstr ""
+
+#. translators: plugin header field 'Description'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "Inform about post and approved comments via mail to all users of a blog"
+msgstr "Informiert via E-Mail über Artikel und genehmigte Kommentare an alle Benutzer eines Blogs"
+
+#. translators: plugin header field 'Version'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "0.0.3"
+msgstr ""
+
+#: inform-about-content.php:64
+#@ inform_about_content
+msgid "new comment to"
+msgstr "neuer Kommentar zu"
+
+#: inform-about-content.php:65
+#@ inform_about_content
+msgid "to"
+msgstr "zu"
+
+#: inform-about-content.php:66
+#@ inform_about_content
+msgid "by"
+msgstr "von"
+
+#: inform-about-content.php:67
+#@ inform_about_content
+msgid "URL"
+msgstr "URL"
+
