@@ -1,5 +1,5 @@
 === Inform about Content ===
-Contributors: Inpsyde, Bueltge, nullbyte
+Contributors: inpsyde, Bueltge, nullbyte, dnaber-de, hughwillfayle
 Tags: mail, comment, post
 Requires at least: 3.0
 Tested up to: 3.1.3
@@ -13,8 +13,6 @@ Plugin which sends emails to us from WordPress, for comments and new posts, exce
 = Bugs, technical hints or contribute =
 Please give me feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
 
-= Localizations =
-* Thanks to [Frank B&uuml;ltge](http://bueltge.de/ "Frank B&uuml;ltge") for german language file
 
 == Installation ==
 = Requirements =
@@ -27,14 +25,23 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Thats all
 
+
+== Screenshots ==
+1. Settings on profile page
+
+
+== Other Notes ==
+= Localizations =
+* Thanks to [Frank B&uuml;ltge](http://bueltge.de/ "Frank B&uuml;ltge") for german language file
+* Thanks to [Brian Flores](http://www.inmotionhosting.com/) for spanish translation
+* Lithuanian translation files by [Vincent G](http://www.host1plus.com)
+
 = Licence =
 Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog.
 
 = Translations =
 The plugin comes with various translations, please refer to the [WordPress Codex](http://codex.wordpress.org/Installing_WordPress_in_Your_Language "Installing WordPress in Your Language") for more information about activating the translation. If you want to help to translate the plugin to your language, please have a look at the .po file which contains all defintions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows) or plugin for WordPress [Localization](http://wordpress.org/extend/plugins/codestyling-localization/).
 
-== Screenshots ==
-1. Settings on profile page
 
 == Changelog ==
 = 0.0.4 =
