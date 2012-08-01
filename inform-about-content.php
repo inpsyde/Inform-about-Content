@@ -28,7 +28,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		/**
 		 * set the default behaviour
-		 * TRUE    all users have to opt-out of the notification
+		 * TRUE    all users have to opt-out to the notification
 		 * FALSE   all users have to opt-in to the notification
 		 *
 		 * @var bool
@@ -124,44 +124,93 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				FALSE,
 				dirname( plugin_basename( __FILE__ ) ) . '/languages'
 			);
+
 		}
 
 		/**
-		 * Get user-mails from all users of a blog
+		 * Get user-mails from all users of a blog by a meta key and the exclusion value ( `!=` operator )
 		 *
 		 * @access  public
 		 * @since  0.0.1
 		 * @used   get_users
-		 * @param  string $current_user email of user
-		 * @param  string $key key of metavalues to user
+		 * @param  string $current_user_email email of user
+		 * @param  string $context should be 'comment' or 'post'
 		 * @return array string $users
 		 */
-		public function get_members( $current_user = NULL, $key = NULL ) {
+		public function get_members( $current_user_email = NULL, $context = '' ) {
 
-			global $blog_id;
+			$meta_key = $context . '_subscription';
+			$meta_value = '0';
+			$meta_compare = '!=';
+			$include_empty = TRUE;
 
-			$users = FALSE;
-			if ( isset( $blog_id ) && ! empty( $blog_id ) ) {
-				$blogusers = get_users( array( 'blog_id' => $blog_id ) );
-				$users = array();
-				foreach ( $blogusers as $user_object ) {
-					$subscribe = get_the_author_meta( $key , $user_object -> ID );
-
-					$not_current_user = TRUE;
-					$subscriber = TRUE;
-					// filter author mail
-					if ( $current_user === $user_object -> user_email )
-						$not_current_user = FALSE;
-					// filter profile options
-					if ( '0' === $subscribe )
-						$subscriber = FALSE;
-					if ( $not_current_user && $subscriber )
-						$users[] .= $user_object -> user_email;
-				}
-				$users = implode( ', ', $users );
+			if ( self::$default_opt_in ) {
+				$meta_value = '1';
+				$meta_compare = '=';
+				$include_empty = FALSE;
 			}
 
-			return $users;
+			$users = $this->get_users_by_meta( $meta_key, $meta_value, $meta_compare, $include_empty );
+			$user_addresses = array();
+			foreach ( $users as $user ) {
+				if ( $current_user_email === $user->data->user_email )
+					continue;
+				$user_addresses[] = $user->data->user_email;
+			}
+
+			return implode( ', ', $user_addresses );
+		}
+
+		/**
+		 * get users by meta key
+		 *
+		 * @since 0.0.5
+		 * @param string $meta_key
+		 * @param string $meta_value (Optional)
+		 * @param string $meta_compare (Optional) Out of '!=', '<>' OR '='
+		 * @param bool $include_empty (Optional) Set this to TRUE to retreve Users where the meta-key has not been set yet
+		 * @return array of user-objects
+		 */
+		public function get_users_by_meta( $meta_key, $meta_value = '', $meta_compare = '', $include_empty = FALSE ) {
+
+			if ( $include_empty ) {
+				#get all with the oposit value
+				if ( in_array( $meta_compare, array( '<>', '!=' ) ) )
+					$meta_compare = '=';
+				else
+					$meta_compare = '!=';
+
+				$query = new WP_User_Query(
+					array(
+						'meta_key'     => $meta_key,
+						'meta_value'   => $meta_value,
+						'meta_compare' => $meta_compare,
+						'fields'       => 'ID'
+					)
+				);
+				$exclude_users = $query->get_results();
+
+				# get all users
+				$query = new WP_User_Query(
+					array(
+						'fields'  => 'all_with_meta',
+						'exclude' => $exclude_users
+					)
+				);
+
+				return $query->get_results();
+			}
+
+			$query = new WP_User_Query(
+				array(
+					'meta_key'     => $meta_key,
+					'meta_value'   => $meta_value,
+					'meta_compare' => $meta_compare,
+					'fields'        => 'all_with_meta'
+				)
+			);
+
+			return $query->get_results();
 		}
 
 		/**
@@ -182,7 +231,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$user_mail = get_userdata( $post_data -> post_author );
 
 				// email addresses
-				$to = $this->get_members( $user_mail -> user_email, 'post_subscription' );
+				$to = $this->get_members( $user_mail -> user_email, 'post' );
 				// email subject
 				$subject = get_option( 'blogname' ) . ': ' . $post_data -> post_title;
 				// message content
@@ -232,7 +281,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$user_mail = get_userdata( $comment_data -> user_id );
 
 					// email addresses
-					$to = $this -> get_members( $user_mail->user_email, 'comment_subscription' );
+					$to = $this -> get_members( $user_mail->user_email, 'comment' );
 					// email subject
 					$subject = get_option( 'blogname' ) . ': ' . $post_data -> post_title;
 					// message content
