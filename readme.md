@@ -1,9 +1,9 @@
 # Inform about Content
-Contributors: inpsyde, Bueltge, nullbyte, dnaber-de, hughwillfayle 
-Tags: mail, comment, post 
-Requires at least: 3.0 
-Tested up to: 3.5-alpha 
-Stable tag: 0.0.4 
+Contributors: [inpsyde](http://inpsyde.com/), [Bueltge](https://github.com/bueltge/), [nullbyte](https://github.com/nullbyte/), [dnaber-de](https://github.com/dnaber-de/), hughwillfayle  
+Tags: mail, comment, post  
+Requires at least: 3.0  
+Tested up to: 3.5-alpha  
+Stable tag: 0.0.4
 
 Informs all users of a blog about a new post and approved comments via email
 
