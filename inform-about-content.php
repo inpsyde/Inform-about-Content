@@ -101,7 +101,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$this -> mail_string_url			= __( 'URL', $this -> get_textdomain() );
 
 			// include settings on profile
-			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class.profile-settings.php';
+			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Profile_Settings.php';
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ) );
