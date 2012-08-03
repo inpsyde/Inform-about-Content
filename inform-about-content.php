@@ -39,8 +39,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		static private $classobj         = NULL;
 
-		// hard values, alternative use the settings on user profile
-		// bool for active mail for a new post
+		/**
+		 * hard values, alternative use the settings on user profile
+		 * bool for active mail for a new post
+		 */
 		public $inform_about_posts       = TRUE;
 
 		// bool for active mail for a new comment
@@ -48,8 +50,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		// strings for mail
 		public $mail_string_new_comment_to;
+
 		public $mail_string_to;
+
 		public $mail_string_by;
+
 		public $mail_string_url;
 
 		/**
@@ -95,10 +100,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
 
 			// set srings for mail
-			$this -> mail_string_new_comment_to	= __( 'new comment to', $this -> get_textdomain() );
-			$this -> mail_string_to				= __( 'to:', $this -> get_textdomain() );
-			$this -> mail_string_by				= __( 'by', $this -> get_textdomain() );
-			$this -> mail_string_url			= __( 'URL', $this -> get_textdomain() );
+			$this -> mail_string_new_comment_to = __( 'new comment to', $this -> get_textdomain() );
+			$this -> mail_string_to             = __( 'to:', $this -> get_textdomain() );
+			$this -> mail_string_by             = __( 'by', $this -> get_textdomain() );
+			$this -> mail_string_url            = __( 'URL', $this -> get_textdomain() );
 
 			// include settings on profile
 			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Profile_Settings.php';
