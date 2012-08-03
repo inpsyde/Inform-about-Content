@@ -48,6 +48,9 @@ class Iac_Profile_Settings {
 
 		add_action( 'personal_options_update', 	array( $this, 'save_custom_profile_fields' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'save_custom_profile_fields' ) );
+
+		add_action( 'iac_save_user_settings',   array( $this, 'save_user_settings' ), 10, 3 );
+		add_filter( 'iac_get_user_settings',    array( $this, 'get_user_settings' ), 10, 2 );
 	}
 
 	/**
@@ -94,16 +97,9 @@ class Iac_Profile_Settings {
 	 */
 	public function add_custom_profile_fields( $user ) {
 
-		$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
-		$default = $default_opt_in
-			? '0'
-			: '1';
-		$inform_about_posts    = get_user_meta( $user->ID, 'post_subscription', TRUE );
-		$inform_about_comments = get_user_meta( $user->ID, 'comment_subscription', TRUE );
-		if ( '' === $inform_about_posts )
-			$inform_about_posts = $default;
-		if ( '' === $inform_about_comments )
-			$inform_about_comments = $default;
+		$user_settings = apply_filters( 'iac_get_user_settings', array(), $user->ID );
+		extract( $user_settings ); #'inform_about_posts', 'inform_about_comments'
+
 	?>
 		<h3><?php _e( 'Inform about Content?', $this -> get_textdomain() ); ?></h3>
 
@@ -132,7 +128,7 @@ class Iac_Profile_Settings {
 	<?php }
 
 	/**
-	 * Save meta data from custom profile fields only if the user changed something
+	 * Save meta data from custom profile fields
 	 *
 	 * @access public
 	 * @since  0.0.2
@@ -142,42 +138,72 @@ class Iac_Profile_Settings {
 	 */
 	public function save_custom_profile_fields( $user_id ) {
 
+		do_action(
+			'iac_save_user_settings',
+			$user_id,
+			isset( $_POST[ 'post_subscription' ] )
+				? $_POST[ 'post_subscription' ]
+				: NULL
+			,
+			isset( $_POST[ 'comment_subscription' ] )
+				? $_POST[ 'comment_subscription' ]
+				: NULL
+		);
+
+	}
+
+	/**
+	 * save user data passed to this function
+	 * applied to the action 'iac_save_user_settings'
+	 * so you can add user-settings forms to your theme/frontend or anywhere
+	 *
+	 * it's intended to change the behaviour (mail-notification) for each user
+	 * who didn't ever touch these settings, when the default behaviour (opt-in/opt-out)
+	 * changes.
+	 *
+	 * @param int $user_id
+	 * @param string $inform_about_posts
+	 * @param string $inform_about_comments
+	 * @return void
+	 */
+	public function save_user_settings( $user_id, $inform_about_posts = NULL, $inform_about_comments = NULL ) {
+
 		if ( ! current_user_can( 'edit_user', $user_id ) )
 			return FALSE;
 
-		$default_opt_in        = apply_filters( 'iac_default_opt_in', FALSE );
-		$inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
-		$inform_about_comments = get_user_meta( $user_id, 'comment_subscription', TRUE );
+		$default_opt_in             = apply_filters( 'iac_default_opt_in', FALSE );
+		$prev_inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
+		$prev_inform_about_comments = get_user_meta( $user_id, 'comment_subscription', TRUE );
 
 		if ( $default_opt_in ) {
-			if ( ! isset( $_POST['post_subscription'] ) && '' === $inform_about_posts ) {
+			if ( is_null( $inform_about_posts ) && '' === $prev_inform_about_posts ) {
 				#nothing to do, user didn't changed the default behaviour
-				unset( $inform_about_posts );
-			} elseif ( ! isset( $_POST[ 'post_subscription' ] ) ) {
+				$inform_about_posts = NULL;
+			} elseif ( is_null( $inform_about_posts ) ) {
 				$inform_about_posts = '0';
 			} else {
 				$inform_about_posts = '1';
 			}
 
-			if ( ! isset( $_POST['comment_subscription'] ) && '' === $inform_about_comments ) {
-				unset( $inform_about_comments );
-			} elseif ( ! isset( $_POST[ 'comment_subscription' ] ) ) {
+			if ( is_null( $inform_about_comments ) && '' === $prev_inform_about_comments ) {
+				$inform_about_comments = NULL;
+			} elseif ( is_null( $inform_about_comments ) ) {
 				$inform_about_comments = '0';
 			} else {
 				$inform_about_comments = '1';
 			}
 		} else {
-			if ( isset( $_POST['post_subscription'] ) && '' === $inform_about_posts ) {
-				unset( $inform_about_posts );
-			} elseif ( isset( $_POST[ 'post_subscription' ] ) ) {
+			if ( ! is_null( $inform_about_posts ) && '' === $prev_inform_about_posts ) {
+				$inform_about_posts = NULL;
+			} elseif ( ! is_null( $inform_about_posts ) ) {
 				$inform_about_posts = '1';
 			} else {
 				$inform_about_posts = '0';
 			}
 
-			if ( isset( $_POST['comment_subscription'] ) && '' === $inform_about_comments ) {
-				unset( $inform_about_comments );
-			} elseif ( isset( $_POST[ 'comment_subscription' ] ) ) {
+			if ( ! is_null(  $inform_about_comments ) && '' === $prev_inform_about_comments ) {
+				$inform_about_comments = NULL;
+			} elseif ( ! is_null( $inform_about_comments ) ) {
 				$inform_about_comments = '1';
 			} else {
 				$inform_about_comments = '0';
@@ -189,6 +215,36 @@ class Iac_Profile_Settings {
 
 		if ( isset( $inform_about_comments ) )
 			update_user_meta( $user_id, 'comment_subscription', $inform_about_comments );
+
+	}
+
+	/**
+	 * get the current setting for a user
+	 *
+	 * @param $default
+	 * @param int $user_id
+	 * @return array
+	 */
+	public function get_user_settings( $default = array(), $user_id = NULL ) {
+
+		if ( ! $user_id )
+			return $default;
+
+		$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
+		$default = $default_opt_in
+			? '0'
+			: '1';
+
+		$settings = array(
+			'inform_about_posts'    => get_user_meta( $user_id, 'post_subscription', TRUE ),
+			'inform_about_comments' => get_user_meta( $user_id, 'comment_subscription', TRUE )
+		);
+		foreach( $settings as $k => $v ) {
+			if ( '' === $v )
+				$settings[ $k ] = $default;
+		}
+
+		return $settings;
 	}
 
 }
