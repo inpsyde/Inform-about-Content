@@ -21,6 +21,8 @@
 if ( ! class_exists( 'Inform_About_Content' ) ) {
 	// add plugin to WP
 	if ( function_exists( 'add_action' ) ) {
+		# set the default behaviour
+		add_filter( 'iac_default_opt_in', array( 'Inform_About_Content', 'default_opt_in' ) );
 		add_action( 'plugins_loaded' , array( 'Inform_About_Content', 'get_object' ) );
 	}
 
@@ -49,6 +51,19 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public $mail_string_to;
 		public $mail_string_by;
 		public $mail_string_url;
+
+		/**
+		 * set's the default behaviour of mail sending
+		 * applied to the filter 'iac_default_opt_in'
+		 *
+		 * @since 0.0.5
+		 * @param bool $default_opt_in
+		 * @return FALSE
+		 */
+		public static function default_opt_in( $default_opt_in ) {
+
+			return FALSE;
+		}
 
 		/**
 		 * Handler for the action 'init'. Instantiates this class.
