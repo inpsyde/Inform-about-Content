@@ -98,14 +98,12 @@ class Iac_Profile_Settings {
 		$default = $default_opt_in
 			? '0'
 			: '1';
-		$inform_about_posts = isset( $user->data->post_subcription )
-			? $user->data->post_subcription
-			: $default;
-		$inform_about_comments = isset( $user->data->comment_subscription )
-			? $user->data->comment_subscription
-			: $default;
-
-		echo '<pre>'; var_dump( $user ); echo '</pre>';
+		$inform_about_posts    = get_user_meta( $user->ID, 'post_subscription', TRUE );
+		$inform_about_comments = get_user_meta( $user->ID, 'comment_subscription', TRUE );
+		if ( '' === $inform_about_posts )
+			$inform_about_posts = $default;
+		if ( '' === $inform_about_comments )
+			$inform_about_comments = $default;
 	?>
 		<h3><?php _e( 'Inform about Content?', $this -> get_textdomain() ); ?></h3>
 
@@ -116,7 +114,7 @@ class Iac_Profile_Settings {
 				</th>
 				<td>
 					<input type="checkbox" id="post_subscription_checkbox" name="post_subscription" value="1"
-					<?php if ( ! isset( $user -> data -> post_subscription ) ) { $user -> data -> post_subscription = '1'; } checked( '1', $user->data->post_subscription ); ?> />
+					<?php checked( '1', $inform_about_posts ); ?> />
 					<span class="description"><?php _e( 'Inform about new posts via e-mail, without your own posts.', $this->get_textdomain() ); ?></span>
 				</td>
 			</tr>
@@ -126,7 +124,7 @@ class Iac_Profile_Settings {
 				</th>
 				<td>
 					<input type="checkbox" id="comment_subscription_checkbox" name="comment_subscription" value="1"
-					<?php if ( ! isset( $user -> data -> comment_subscription ) ) { $user -> data -> comment_subscription = '1'; } checked( '1', $user->data->comment_subscription ); ?> />
+					<?php checked( '1', $inform_about_comments ); ?> />
 					<span class="description"><?php _e( 'Inform about new comments via e-mail, without your own comments.', $this->get_textdomain() ); ?></span>
 				</td>
 			</tr>
@@ -134,7 +132,7 @@ class Iac_Profile_Settings {
 	<?php }
 
 	/**
-	 * Save meta data from custom profile fields
+	 * Save meta data from custom profile fields only if the user changed something
 	 *
 	 * @access public
 	 * @since  0.0.2
@@ -147,13 +145,50 @@ class Iac_Profile_Settings {
 		if ( ! current_user_can( 'edit_user', $user_id ) )
 			return FALSE;
 
-		if ( ! isset( $_POST['post_subscription'] ) )
-			$_POST['post_subscription'] = 0;
-		if ( ! isset( $_POST['comment_subscription'] ) )
-			$_POST['comment_subscription'] = 0;
+		$default_opt_in        = apply_filters( 'iac_default_opt_in', FALSE );
+		$inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
+		$inform_about_comments = get_user_meta( $user_id, 'comment_subscription', TRUE );
 
-		update_user_meta( $user_id, 'post_subscription', 	(int) $_POST['post_subscription'] );
-		update_user_meta( $user_id, 'comment_subscription', (int) $_POST['comment_subscription'] );
+		if ( $default_opt_in ) {
+			if ( ! isset( $_POST['post_subscription'] ) && '' === $inform_about_posts ) {
+				#nothing to do, user didn't changed the default behaviour
+				unset( $inform_about_posts );
+			} elseif ( ! isset( $_POST[ 'post_subscription' ] ) ) {
+				$inform_about_posts = '0';
+			} else {
+				$inform_about_posts = '1';
+			}
+
+			if ( ! isset( $_POST['comment_subscription'] ) && '' === $inform_about_comments ) {
+				unset( $inform_about_comments );
+			} elseif ( ! isset( $_POST[ 'comment_subscription' ] ) ) {
+				$inform_about_comments = '0';
+			} else {
+				$inform_about_comments = '1';
+			}
+		} else {
+			if ( isset( $_POST['post_subscription'] ) && '' === $inform_about_posts ) {
+				unset( $inform_about_posts );
+			} elseif ( isset( $_POST[ 'post_subscription' ] ) ) {
+				$inform_about_posts = '1';
+			} else {
+				$inform_about_posts = '0';
+			}
+
+			if ( isset( $_POST['comment_subscription'] ) && '' === $inform_about_comments ) {
+				unset( $inform_about_comments );
+			} elseif ( isset( $_POST[ 'comment_subscription' ] ) ) {
+				$inform_about_comments = '1';
+			} else {
+				$inform_about_comments = '0';
+			}
+		}
+
+		if ( isset( $inform_about_posts ) )
+			update_user_meta( $user_id, 'post_subscription', $inform_about_posts );
+
+		if ( isset( $inform_about_comments ) )
+			update_user_meta( $user_id, 'comment_subscription', $inform_about_comments );
 	}
 
 }
