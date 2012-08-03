@@ -1,5 +1,5 @@
 # Inform about Content
-Contributors: [inpsyde](http://inpsyde.com/), [Bueltge](https://github.com/bueltge/), [nullbyte](https://github.com/nullbyte/), [dnaber-de](https://github.com/dnaber-de/), hughwillfayle  
+Contributors: [inpsyde](http://inpsyde.com/), [Bueltge](https://github.com/bueltge/), [nullbyte](https://github.com/nullbyte/), [dnaber-de](https://github.com/dnaber-de/), [hughwillfayle](http://dasllama.github.com/)  
 Tags: mail, comment, post  
 Requires at least: 3.0  
 Tested up to: 3.5-alpha  
