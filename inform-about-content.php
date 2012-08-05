@@ -108,10 +108,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
 
 			// set srings for mail
-			$this -> mail_string_new_comment_to = __( 'new comment to', $this -> get_textdomain() );
-			$this -> mail_string_to             = __( 'to:', $this -> get_textdomain() );
-			$this -> mail_string_by             = __( 'by', $this -> get_textdomain() );
-			$this -> mail_string_url            = __( 'URL', $this -> get_textdomain() );
+			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
+			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
+			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
+			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
 
 			// include settings on profile
 			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Profile_Settings.php';
@@ -122,9 +122,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ) );
 
-			if ( $this -> inform_about_posts )
+			if ( $this->inform_about_posts )
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
-			if ( $this -> inform_about_comments )
+			if ( $this->inform_about_comments )
 				add_action( 'comment_post', array( $this, 'inform_about_comment' ) );
 		}
 
@@ -151,7 +151,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function localize_plugin() {
 
 			load_plugin_textdomain(
-				$this -> get_textdomain(),
+				$this->get_textdomain(),
 				FALSE,
 				dirname( plugin_basename( __FILE__ ) ) . '/languages'
 			);
@@ -259,34 +259,37 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
-				$user_mail = get_userdata( $post_data->post_author );
+				$user = get_userdata( $post_data->post_author );
 
 				// email addresses
-				$to = $this->get_members( $user_mail->user_email, 'post' );
+				$to = $this->get_members( $user->data->user_email, 'post' );
+
 				// email subject
-				$subject = get_option( 'blogname' ) . ': ' . $post_data -> post_title;
+				$subject = get_option( 'blogname' ) . ': ' . $post_data->post_title;
+
 				// message content
-				$message = $post_data -> post_content . ' ' . PHP_EOL .
-					$this -> mail_string_by . ' ' .
-					get_author_name( $post_data -> post_author ) . ' ' . PHP_EOL .
-					$this -> mail_string_url . ': ' .
+				$message = $post_data->post_content . ' ' . PHP_EOL .
+					$this->mail_string_by . ' ' .
+					get_the_author_meta( 'display_name', $user->ID ) . ' ' . PHP_EOL .
+					$this->mail_string_url . ': ' .
 					get_permalink( $post_id );
 				// create header data
 				$headers = 'From: ' .
-					get_author_name( $post_data -> post_author ) .
-					' (' . get_option( 'blogname' ) . ')' .
-					' <' . $user_mail -> user_email . '>' .
+					get_the_author_meta( 'display_name', $user->ID ) .
+					' (' . get_bloginfo( 'name' ) . ')' .
+					' <' . $user->data->user_email . '>' .
 					PHP_EOL;
-				// send mail#
 
 				if ( $this->options[ 'send_by_bcc' ] ) {
 					$bcc = $to;
-					$to = get_option( 'admin_email' );
+					$to = get_bloginfo( 'admin_email' );
 					$headers .=
 						  'Bcc: '
 						. $bcc
 						. PHP_EOL;
 				}
+
+				// send mail
 				wp_mail(
 					$to,
 					$subject,
@@ -314,34 +317,34 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				// get data from current comment
 				$comment_data = get_comment( $comment_id );
 				// if comment status is approved
-				if ( '1' === $comment_data -> comment_approved || $comment_status ) {
+				if ( '1' === $comment_data->comment_approved || $comment_status ) {
 					// get data from post to this comment
-					$post_data = get_post( $comment_data -> comment_post_ID );
-					// get mail from author
-					$user_mail = get_userdata( $comment_data -> user_id );
+					$post_data = get_post( $comment_data->comment_post_ID );
+					// the comment author
+					$user = get_userdata( $comment_data->user_id );
 
 					// email addresses
-					$to = $this -> get_members( $user_mail->user_email, 'comment' );
+					$to = $this->get_members( $user->data->user_email, 'comment' );
 					// email subject
-					$subject = get_option( 'blogname' ) . ': ' . $post_data -> post_title;
+					$subject = get_bloginfo( 'name' ) . ': ' . $post_data->post_title;
 					// message content
-					$message = $comment_data -> comment_content . ' ' . PHP_EOL .
-						$this -> mail_string_by . ' ' .
-						get_author_name( $comment_data -> user_id ) . ' ' .
-						$this -> mail_string_to . ' ' .
-						$post_data -> post_title . ' ' . PHP_EOL .
-						$this -> mail_string_url . ': ' .
-						get_permalink( $post_data -> ID );
+					$message = $comment_data->comment_content . ' ' . PHP_EOL .
+						$this->mail_string_by . ' ' .
+						get_the_author_meta( 'display_name', $user->ID ) . ' ' .
+						$this->mail_string_to . ' ' .
+						$post_data->post_title . ' ' . PHP_EOL .
+						$this->mail_string_url . ': ' .
+						get_permalink( $post_data->ID );
 					// create header data
 					$headers = 'From: ' .
-						get_author_name( $comment_data -> user_id ) .
-						' (' . get_option( 'blogname' ) . ')' .
-						' <' . $user_mail -> user_email . '>' .
+						get_the_author_meta( 'display_name', $user->ID ) .
+						' (' . get_bloginfo( 'name' ) . ')' .
+						' <' . $user->data->user_email . '>' .
 						PHP_EOL;
 					// send mail
 					if ( $this->options[ 'send_by_bcc' ] ) {
 						$bcc = $to;
-						$to = get_option( 'admin_email' );
+						$to = get_bloginfo( 'admin_email' );
 						$headers .=
 							  'Bcc: '
 							. $bcc
