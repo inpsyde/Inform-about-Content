@@ -39,14 +39,14 @@ class Iac_Profile_Settings {
 	public function __construct() {
 
 		// textdomain from parent class
-		$this -> textdomain = Inform_About_Content :: get_textdomain();
+		$this->textdomain = Inform_About_Content::get_textdomain();
 
-		register_uninstall_hook(  __FILE__, 	array( 'Iac_Profile_Settings', 'remove_author_meta_values' ) );
+		register_uninstall_hook( __FILE__,      array( 'Iac_Profile_Settings', 'remove_author_meta_values' ) );
 
-		add_action( 'show_user_profile', 		array( $this, 'add_custom_profile_fields' ) );
-		add_action( 'edit_user_profile', 		array( $this, 'add_custom_profile_fields' ) );
+		add_action( 'show_user_profile',        array( $this, 'add_custom_profile_fields' ) );
+		add_action( 'edit_user_profile',        array( $this, 'add_custom_profile_fields' ) );
 
-		add_action( 'personal_options_update', 	array( $this, 'save_custom_profile_fields' ) );
+		add_action( 'personal_options_update',  array( $this, 'save_custom_profile_fields' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'save_custom_profile_fields' ) );
 
 		add_action( 'iac_save_user_settings',   array( $this, 'save_user_settings' ), 10, 3 );
@@ -62,7 +62,7 @@ class Iac_Profile_Settings {
 	 */
 	public function get_textdomain() {
 
-		return $this -> textdomain;
+		return $this->textdomain;
 	}
 
 	/**
@@ -79,8 +79,8 @@ class Iac_Profile_Settings {
 		if ( isset( $blog_id ) && ! empty( $blog_id ) ) {
 			$blogusers = get_users( array( 'blog_id' => $blog_id ) );
 			foreach ( $blogusers as $user_object ) {
-				delete_user_meta( $user_object -> ID, 'post_subscription' );
-				delete_user_meta( $user_object -> ID, 'comment_subscription' );
+				delete_user_meta( $user_object->ID, 'post_subscription' );
+				delete_user_meta( $user_object->ID, 'comment_subscription' );
 			}
 		}
 
@@ -101,7 +101,7 @@ class Iac_Profile_Settings {
 		extract( $user_settings ); #'inform_about_posts', 'inform_about_comments'
 
 	?>
-		<h3><?php _e( 'Inform about Content?', $this -> get_textdomain() ); ?></h3>
+		<h3><?php _e( 'Inform about Content?', $this->get_textdomain() ); ?></h3>
 
 		<table class="form-table">
 			<tr id="post_subscription">
