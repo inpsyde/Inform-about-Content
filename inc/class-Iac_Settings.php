@@ -52,6 +52,11 @@ class Iac_Settings {
 	 */
 	public function __construct() {
 
+		register_uninstall_hook(
+			__FILE__,
+			array( __CLASS__, 'uninstall' )
+		);
+
 		$default_options = apply_filters(
 			'iac_default_options',
 			self::$default_options
@@ -156,6 +161,16 @@ class Iac_Settings {
 			update_option( self::OPTION_KEY, $options );
 		}
 		$this->options = $options;
+	}
+
+	/**
+	 * clean up
+	 *
+	 * @return void
+	 */
+	public static function uninstall() {
+
+		delete_option( self::OPTION_KEY );
 	}
 
 }
