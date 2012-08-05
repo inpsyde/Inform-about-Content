@@ -21,6 +21,7 @@
 if ( ! class_exists( 'Inform_About_Content' ) ) {
 	// add plugin to WP
 	if ( function_exists( 'add_action' ) ) {
+
 		# set the default behaviour
 		add_filter( 'iac_default_opt_in', array( 'Inform_About_Content', 'default_opt_in' ) );
 		add_action( 'plugins_loaded' , array( 'Inform_About_Content', 'get_object' ) );
@@ -110,6 +111,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  void
 		 */
 		public function __construct() {
+			spl_autoload_register( array( __CLASS__, 'load_class' ) );
 
 			# change the default behaviour from outside
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
@@ -120,9 +122,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
 
-			// include settings on profile
-			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Profile_Settings.php';
-			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Settings.php';
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
@@ -367,6 +366,20 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			}
 
 			return $comment_id;
+		}
+
+		/**
+		 * autoloader for the classes
+		 *
+		 * @since 0.0.5
+		 * @param string $class_name
+		 * @return void
+		 */
+		public static function load_class( $class_name ) {
+
+			$file_name = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
+			if ( file_exists( $file_name ) )
+				require_once $file_name;
 		}
 
 	} // end class Inform_About_Content
