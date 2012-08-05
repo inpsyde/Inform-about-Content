@@ -75,14 +75,14 @@ class Iac_Settings {
 
 		add_settings_section(
 			$this->section,
-			'Inform About Content Settings',
+			__( 'Inform About Content Settings', Inform_About_Content::TEXTDOMAIN ),
 			array( $this, 'description' ),
 			$this->page
 		);
 
 		add_settings_field(
 			'send_by_bcc',
-			__( 'Hide E-Mail addresses to other recipients (BCC)', '' ),
+			__( 'Hide E-Mail addresses to other recipients (BCC)', Inform_About_Content::TEXTDOMAIN ),
 			array( $this, 'checkbox' ),
 			$this->page,
 			$this->section,

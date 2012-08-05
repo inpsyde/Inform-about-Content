@@ -29,6 +29,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 	class Inform_About_Content {
 
 		/**
+		 * Textdomain
+		 *
+		 * @const string
+		 */
+		const TEXTDOMAIN = 'inform_about_content';
+
+		/**
 		 * set the default behaviour
 		 * TRUE    all users have to opt-out to the notification
 		 * FALSE   all users have to opt-in to the notification
@@ -137,7 +144,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function get_textdomain() {
 
-			return 'inform_about_content';
+			return self::TEXTDOMAIN;
 		}
 
 		/**
