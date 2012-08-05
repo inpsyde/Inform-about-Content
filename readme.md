@@ -32,6 +32,31 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 ## Screenshots
 1. Settings on profile page
 
+## API
+### Plugin Settings
+By default, the plugin sends a mail to all registered users of a blog on new posts or comments, except a user disables the functionality for itself (opt-out). As of version 0.0.5 you can change this behaviour to opt-in with the filter ```iac\_default\_opt_in``` :
+```
+add\_filter( 'iac\_default\_opt\_in', '\_\_return\_true' );
+```
+Make shure, this code runs on the action ```plugins_loaded``` with a priority lower than 10 or earlier.
+
+With version 0.0.5 the plugin got settings (Settings→Reading). The one new option allows you to send all emails with the Bcc-header to hide users email-addresses to all other recipients. This option is disabled by default. You have access to the default settings via the filter ```iac\_default\_options```. An array is passed to this funktion with the key ```send\_by\_bcc```. Change the value to '1' and return the array on your callback function.
+
+### User Settings handling
+To change the users settings (inform about posts, inform about comments) use the action ```iac\_save\_user\_settings``` like this:
+```
+do_action(
+	'iac\_save\_user\_settings',
+	$user_id,
+	$inform\_about\_posts, # '1', '0' or NULL if the user didn't changed anything
+	$inform\_about\_comments # '1', '0' or NULL if the user didn't changed anything
+);
+```
+Getting the current user settings is also easy:
+```
+$user\_settings = apply\_filters( 'iac\_get\_user\_settings', array(), $user_id );
+```
+
 
 ## Other Notes
 ### Localizations
@@ -47,11 +72,4 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 ## Changelog
-### 0.0.4
-* small fix for hook to use static method
-
-### 0.0.3
-* first release on wp.org
-
-### 0.0.1
-* Release first version
+Please see the official changelog of the stable tags at [Wordpress.org](http://wordpress.org/extend/plugins/inform-about-content/changelog/) 

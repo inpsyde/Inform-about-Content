@@ -21,7 +21,7 @@ class Iac_Settings {
 	 * @var array
 	 */
 	protected static $default_options = array(
-		'send_by_bcc' => '0'
+		'send_by_bcc' => '0' # use strings here '1' or '0'
 	);
 
 	/**
