@@ -58,6 +58,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public $mail_string_url;
 
 		/**
+		 * plugin options
+		 *
+		 * @since 0.0.5
+		 * @var array
+		 */
+		protected $options = array();
+
+		/**
 		 * set's the default behaviour of mail sending
 		 * applied to the filter 'iac_default_opt_in'
 		 *
@@ -107,7 +115,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			// include settings on profile
 			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Profile_Settings.php';
+			require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc/class-Iac_Settings.php';
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
+			$settings = new Iac_Settings();
+			$this->options = $settings->options;
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ) );
 
@@ -248,10 +259,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
-				$user_mail = get_userdata( $post_data -> post_author );
+				$user_mail = get_userdata( $post_data->post_author );
 
 				// email addresses
-				$to = $this->get_members( $user_mail -> user_email, 'post' );
+				$to = $this->get_members( $user_mail->user_email, 'post' );
 				// email subject
 				$subject = get_option( 'blogname' ) . ': ' . $post_data -> post_title;
 				// message content
@@ -266,7 +277,16 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					' (' . get_option( 'blogname' ) . ')' .
 					' <' . $user_mail -> user_email . '>' .
 					PHP_EOL;
-				// send mail
+				// send mail#
+
+				if ( $this->options[ 'send_by_bcc' ] ) {
+					$bcc = $to;
+					$to = get_option( 'admin_email' );
+					$headers .=
+						  'Bcc: '
+						. $bcc
+						. PHP_EOL;
+				}
 				wp_mail(
 					$to,
 					$subject,
@@ -319,6 +339,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						' <' . $user_mail -> user_email . '>' .
 						PHP_EOL;
 					// send mail
+					if ( $this->options[ 'send_by_bcc' ] ) {
+						$bcc = $to;
+						$to = get_option( 'admin_email' );
+						$headers .=
+							  'Bcc: '
+							. $bcc
+							. PHP_EOL;
+					}
 					wp_mail(
 						$to,
 						$subject, // email subject
