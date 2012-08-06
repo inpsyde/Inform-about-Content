@@ -1,5 +1,5 @@
 === Inform about Content ===
-Contributors: inpsyde, Bueltge, nullbyte, dnaber-de, hughwillfayle
+Contributors: [inpsyde](http://inpsyde.com/), [Bueltge](https://github.com/bueltge/), [nullbyte](https://github.com/nullbyte/), [dnaber-de](https://github.com/dnaber-de/), [hughwillfayle](http://dasllama.github.com/)
 Tags: mail, comment, post
 Requires at least: 3.0
 Tested up to: 3.5-alpha
@@ -13,6 +13,8 @@ Plugin which sends emails to us from WordPress, for comments and new posts, exce
 = Bugs, technical hints or contribute =
 Please give me feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
 
+= Made by [Inpsyde](http://inpsyde.com) &middot; We love WordPress =
+Have a look at the premium plugins in our [market](http://marketpress.com).
 
 == Installation ==
 = Requirements =
@@ -30,6 +32,33 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 1. Settings on profile page
 
 
+== API ==
+= Plugin settings =
+By default, the plugin sends a mail to all registered users of a blog on new posts or comments, except a user disables the functionality for itself (opt-out). As of version 0.0.5 you can change this behaviour to opt-in with the filter ```iac_default_opt_in``` :
+```php
+add_filter( 'iac_default_opt_in', '__return_true' );
+```
+Make shure, this code runs on the action ```plugins_loaded``` with a priority lower than 10 or earlier.
+
+With version 0.0.5 the plugin got settings (Settings→Reading). The one new option allows you to send all emails with the Bcc-header to hide users email-addresses to all other recipients. This option is disabled by default. You have access to the default settings via the filter ```iac_default_options```. An array is passed to this funktion with the key ```send_by_bcc```. Change the value to '1' and return the array on your callback function.
+
+= User settings handling =
+To change the users settings (inform about posts, inform about comments) use the action ```iac_save_user_settings``` like this:
+```php
+do_action(
+	'iac_save_user_settings',
+	$user_id,
+	$inform_about_posts, # '1', '0' or NULL if the user didn't changed anything
+	$inform_about_comments # '1', '0' or NULL if the user didn't changed anything
+);
+```
+Getting the current user settings is also easy:
+```php
+$user_settings = apply_filters( 'iac_get_user_settings', array(), $user_id );
+```
+
+
+
 == Other Notes ==
 = Localizations =
 * Thanks to [Frank B&uuml;ltge](http://bueltge.de/ "Frank B&uuml;ltge") for german language file
@@ -44,6 +73,10 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
+= 0.0.5 =
+* Option to send email by Bcc-header
+* API to change the plugins default behaviour (opt-in/opt-out)
+
 = 0.0.4 =
 * small fix for hook to use static method
 

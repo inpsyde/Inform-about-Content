@@ -35,7 +35,7 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 ## API
 ### Plugin settings
 By default, the plugin sends a mail to all registered users of a blog on new posts or comments, except a user disables the functionality for itself (opt-out). As of version 0.0.5 you can change this behaviour to opt-in with the filter ```iac_default_opt_in``` :
-```
+```php
 add_filter( 'iac_default_opt_in', '__return_true' );
 ```
 Make shure, this code runs on the action ```plugins_loaded``` with a priority lower than 10 or earlier.
@@ -44,7 +44,7 @@ With version 0.0.5 the plugin got settings (Settings→Reading). The one new opt
 
 ### User settings handling
 To change the users settings (inform about posts, inform about comments) use the action ```iac_save_user_settings``` like this:
-```
+```php
 do_action(
 	'iac_save_user_settings',
 	$user_id,
@@ -53,7 +53,7 @@ do_action(
 );
 ```
 Getting the current user settings is also easy:
-```
+```php
 $user_settings = apply_filters( 'iac_get_user_settings', array(), $user_id );
 ```
 
@@ -72,4 +72,4 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 ## Changelog
-Please see the official changelog of the stable tags at [Wordpress.org](http://wordpress.org/extend/plugins/inform-about-content/changelog/) 
+Please see the official changelog of the stable tags at [Wordpress.org](http://wordpress.org/extend/plugins/inform-about-content/changelog/) or read the commits on github.
