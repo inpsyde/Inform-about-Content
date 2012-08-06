@@ -1,20 +1,20 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: Inform about Content v0.0.5-RC1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2012-08-06 10:28+0000\n"
+"Last-Translator: heike <sakura-angel@gmx.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-Language: \n"
-"X-Poedit-Country: \n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
-"X-Poedit-Basepath: \n"
+"X-Poedit-Basepath: ../\n"
 "X-Poedit-Bookmarks: \n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
@@ -22,64 +22,43 @@ msgstr ""
 #: inc/class-Iac_Profile_Settings.php:104
 #@ inform_about_content
 msgid "Inform about Content?"
-msgstr "Information über neue Inhalte?"
+msgstr "Informar sobre el contenido"
 
 #: inc/class-Iac_Profile_Settings.php:109
 #@ inform_about_content
 msgid "Posts subscription"
-msgstr "Artikelabonnement"
+msgstr "subscripción de artículos"
 
 #: inc/class-Iac_Profile_Settings.php:114
 #@ inform_about_content
 msgid "Inform about new posts via e-mail, without your own posts."
-msgstr "Informiere dich über neue Artikel via E-Mail, ohne deine eigenen Artikel."
+msgstr "Informar sobre nuevos artículos vía correo electrónico, sin su proprios artículos"
 
 #: inc/class-Iac_Profile_Settings.php:119
 #@ inform_about_content
 msgid "Comments subscription"
-msgstr "Kommentarabonnement"
+msgstr "subscripción comentarios"
 
 #: inc/class-Iac_Profile_Settings.php:124
 #@ inform_about_content
 msgid "Inform about new comments via e-mail, without your own comments."
-msgstr "Informiere dich über neue Kommentare via E-Mail, ohne deine eigenen Kommentare."
+msgstr "Informar sobre nuevos comentarios, sin su proprios comentarios"
+
+#: inc/class-Iac_Settings.php:83
+#@ inform_about_content
+msgid "Inform About Content Settings"
+msgstr "Informar sobre opciónes del contenido"
+
+#: inc/class-Iac_Settings.php:90
+#@ inform_about_content
+msgid "Hide E-Mail addresses to other recipients (BCC)"
+msgstr "Esconder dirección electrónica de otros receptores (BBC)"
 
 #. translators: plugin header field 'Name'
 #: inform-about-content.php:0
 #@ inform_about_content
 msgid "Inform about Content"
-msgstr "Inform about Content - Information über Inhalt"
-
-#. translators: plugin header field 'AuthorURI'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "http://inpsyde.com/"
-msgstr ""
-
-#: inform-about-content.php:120
-#@ inform_about_content
-msgid "new comment to"
-msgstr "neuer Kommentar zu"
-
-#: inform-about-content.php:122
-#@ inform_about_content
-msgid "by"
-msgstr "von"
-
-#: inform-about-content.php:123
-#@ inform_about_content
-msgid "URL"
-msgstr "URL"
-
-#: inc/class-Iac_Settings.php:83
-#@ inform_about_content
-msgid "Inform About Content Settings"
-msgstr "Optionen für »Inform about content«"
-
-#: inc/class-Iac_Settings.php:90
-#@ inform_about_content
-msgid "Hide E-Mail addresses to other recipients (BCC)"
-msgstr "Verberge E-Mailadressen vor anderen Empängern (Bcc)."
+msgstr "Inform about Content – Informar sobre el contenido"
 
 #. translators: plugin header field 'PluginURI'
 #: inform-about-content.php:0
@@ -91,12 +70,18 @@ msgstr ""
 #: inform-about-content.php:0
 #@ inform_about_content
 msgid "Informs all users of a blog about a new post and approved comments via email"
-msgstr "Informiere alle Nutzer des Blogs über neue Artikel und freigegebene Kommentare via E-Mail."
+msgstr "Informa todos usarios de un blog sobre nuevos artículos y comentarios autorizados vìa correo electrónico"
 
 #. translators: plugin header field 'Author'
 #: inform-about-content.php:0
 #@ inform_about_content
 msgid "Inpsyde GmbH"
+msgstr ""
+
+#. translators: plugin header field 'AuthorURI'
+#: inform-about-content.php:0
+#@ inform_about_content
+msgid "http://inpsyde.com/"
 msgstr ""
 
 #. translators: plugin header field 'Version'
@@ -105,8 +90,23 @@ msgstr ""
 msgid "0.0.5-RC1"
 msgstr ""
 
+#: inform-about-content.php:120
+#@ inform_about_content
+msgid "new comment to"
+msgstr "nuevo comentario a"
+
 #: inform-about-content.php:121
 #@ inform_about_content
 msgid "to:"
+msgstr ""
+
+#: inform-about-content.php:122
+#@ inform_about_content
+msgid "by"
+msgstr "de"
+
+#: inform-about-content.php:123
+#@ inform_about_content
+msgid "URL"
 msgstr ""
 
