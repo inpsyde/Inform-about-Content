@@ -126,7 +126,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
 
-			add_action( 'admin_init', array( $this, 'localize_plugin' ) );
+			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
 			if ( $this->inform_about_posts )
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
