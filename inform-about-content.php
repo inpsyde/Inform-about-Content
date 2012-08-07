@@ -271,7 +271,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$to = $this->get_members( $user->data->user_email, 'post' );
 
 				// email subject
-				$subject = get_option( 'blogname' ) . ': ' . $post_data->post_title;
+				$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
 
 				// message content
 				$message = $post_data->post_content . ' ' . PHP_EOL .
@@ -294,7 +294,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						. $bcc
 						. PHP_EOL;
 				}
-
 				// send mail
 				wp_mail(
 					$to,
@@ -332,13 +331,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					// email addresses
 					$to = $this->get_members( $user->data->user_email, 'comment' );
 					// email subject
-					$subject = get_bloginfo( 'name' ) . ': ' . $post_data->post_title;
+					$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
 					// message content
 					$message = $comment_data->comment_content . ' ' . PHP_EOL .
 						$this->mail_string_by . ' ' .
 						get_the_author_meta( 'display_name', $user->ID ) . ' ' .
 						$this->mail_string_to . ' ' .
-						$post_data->post_title . ' ' . PHP_EOL .
+						get_the_title( $post_data->ID ) . ' ' . PHP_EOL .
 						$this->mail_string_url . ': ' .
 						get_permalink( $post_data->ID );
 					// create header data
