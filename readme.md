@@ -31,6 +31,7 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 
 ## Screenshots
 1. Settings on profile page
+2. Settings on Settings → Reading
 
 ## API
 ### Plugin settings
