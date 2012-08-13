@@ -1,0 +1,98 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#@ inform_about_content
+#: inc/class.profile-settings.php:97
+msgid "Inform about Content?"
+msgstr "Informuoti apie turinį?"
+
+#@ inform_about_content
+#: inc/class.profile-settings.php:102
+msgid "Posts subscription"
+msgstr "Įrašų prenumerata"
+
+#@ inform_about_content
+#: inc/class.profile-settings.php:107
+msgid "Inform about new posts via e-mail, without your own posts."
+msgstr "Informuoti apie naujus įrašus elektroniu paštu (neįtraukiant Jūsų paties publikuotų įrašų)."
+
+#@ inform_about_content
+#: inc/class.profile-settings.php:112
+msgid "Comments subscription"
+msgstr "Komentarų prenumerata"
+
+#@ inform_about_content
+#: inc/class.profile-settings.php:117
+msgid "Inform about new comments via e-mail, without your own comments."
+msgstr "Informuoti apie naujus komentarus elektriniu paštu (neskaitant Jūsų paties publikuotų komentarų)"
+
+#@ inform_about_content
+#. translators: plugin header field 'Name'
+#: inform-about-content.php:0
+msgid "Inform about Content"
+msgstr "Informuoti apie Turinį"
+
+#@ inform_about_content
+#. translators: plugin header field 'PluginURI'
+#: inform-about-content.php:0
+msgid "http://inpsyde.com/"
+msgstr "http://inpsyde.com/"
+
+#@ inform_about_content
+#. translators: plugin header field 'Author'
+#: inform-about-content.php:0
+msgid "Frank Bültge"
+msgstr "Frank Bültge"
+
+#@ inform_about_content
+#. translators: plugin header field 'AuthorURI'
+#: inform-about-content.php:0
+msgid "http://bueltge.de"
+msgstr "http://bueltge.de"
+
+#@ inform_about_content
+#. translators: plugin header field 'Description'
+#: inform-about-content.php:0
+msgid "Inform about post and approved comments via mail to all users of a blog"
+msgstr "Informuoti visus tinklaraščio vartotojus apie įrašus ir patvirtinus komentarus elekektroniu paštu"
+
+#@ inform_about_content
+#. translators: plugin header field 'Version'
+#: inform-about-content.php:0
+msgid "0.0.3"
+msgstr "0.0.3"
+
+#@ inform_about_content
+#: inform-about-content.php:64
+msgid "new comment to"
+msgstr "naujas komentaras į"
+
+#@ inform_about_content
+#: inform-about-content.php:65
+msgid "to"
+msgstr "į"
+
+#@ inform_about_content
+#: inform-about-content.php:66
+msgid "by"
+msgstr "nuo"
+
+#@ inform_about_content
+#: inform-about-content.php:67
+msgid "URL"
+msgstr "Universalusis adresas"
+
