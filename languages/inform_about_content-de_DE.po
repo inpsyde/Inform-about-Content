@@ -74,7 +74,7 @@ msgstr "URL"
 #: inc/class-Iac_Settings.php:83
 #@ inform_about_content
 msgid "Inform About Content Settings"
-msgstr "Optionen für »Inform about content«"
+msgstr "Einstellungen für »Inform about content«"
 
 #: inc/class-Iac_Settings.php:90
 #@ inform_about_content
