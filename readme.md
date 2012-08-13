@@ -73,4 +73,15 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 ## Changelog
-Please see the official changelog of the stable tags at [Wordpress.org](http://wordpress.org/extend/plugins/inform-about-content/changelog/) or read the commits on github.
+### 0.0.5 
+* Option to send email by Bcc-header
+* API to change the plugins default behaviour (opt-in/opt-out)
+
+### 0.0.4
+* small fix for hook to use static method
+
+### 0.0.3
+* first release on wp.org
+
+### 0.0.1
+* Release first version
