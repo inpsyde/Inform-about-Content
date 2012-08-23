@@ -6,7 +6,7 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.5-RC1
+ * Version:     0.0.5-RC2
  * Licence:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
@@ -189,6 +189,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			$users = $this->get_users_by_meta( $meta_key, $meta_value, $meta_compare, $include_empty );
 			$user_addresses = array();
+			if ( ! is_array( $users ) || empty( $users ) )
+				return '';
+
 			foreach ( $users as $user ) {
 				if ( $current_user_email === $user->data->user_email )
 					continue;
@@ -211,7 +214,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function get_users_by_meta( $meta_key, $meta_value = '', $meta_compare = '', $include_empty = FALSE ) {
 
 			if ( $include_empty ) {
-				#get all with the oposit value
+				#get all with the opposit value
 				if ( in_array( $meta_compare, array( '<>', '!=' ) ) )
 					$meta_compare = '=';
 				else
@@ -269,6 +272,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 				// email addresses
 				$to = $this->get_members( $user->data->user_email, 'post' );
+				if ( empty( $to ) )
+					return $post_id;
 
 				// email subject
 				$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
@@ -330,6 +335,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 					// email addresses
 					$to = $this->get_members( $user->data->user_email, 'comment' );
+					if ( empty( $to ) )
+						return $comment_id;
+
 					// email subject
 					$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
 					// message content
@@ -355,6 +363,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 							. $bcc
 							. PHP_EOL;
 					}
+
+					// send mail
 					wp_mail(
 						$to,
 						$subject, // email subject
