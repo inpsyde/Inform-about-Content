@@ -246,9 +246,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			$query = new WP_User_Query(
 				array(
-					'meta_key'     => $meta_key,
-					'meta_value'   => $meta_value,
-					'meta_compare' => $meta_compare,
+					'meta_key'      => $meta_key,
+					'meta_value'    => $meta_value,
+					'meta_compare'  => $meta_compare,
 					'fields'        => 'all_with_meta'
 				)
 			);
@@ -287,28 +287,32 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					get_the_author_meta( 'display_name', $user->ID ) . ' ' . PHP_EOL .
 					$this->mail_string_url . ': ' .
 					get_permalink( $post_id );
-				// create header data
-				$headers = 'From: ' .
+
+				# create header data
+				$headers = array();
+				# From:
+				$headers[ 'From' ] =
 					get_the_author_meta( 'display_name', $user->ID ) .
 					' (' . get_bloginfo( 'name' ) . ')' .
-					' <' . $user->data->user_email . '>' .
-					PHP_EOL;
+					' <' . $user->data->user_email . '>';
 
 				if ( $this->options[ 'send_by_bcc' ] ) {
 					$bcc = $to;
-					$to = get_bloginfo( 'admin_email' );
-					$headers .=
-						  'Bcc: '
-						. $bcc
-						. PHP_EOL;
+					$to  = get_bloginfo( 'admin_email' );
+					$headers[ 'Bcc' ] = $bcc;
 				}
-				// send mail
-				wp_mail(
+				$to      = apply_filters( 'iac_post_to',      $to,      $this->options );
+				$subject = apply_filters( 'iac_post_subject', $subject, $this->options );
+				$message = apply_filters( 'iac_post_message', $message, $this->options );
+				$headers = apply_filters( 'iac_post_headers', $headers, $this->options );
+
+				$this->send_mail(
 					$to,
 					$subject,
 					$message,
 					$headers
 				);
+
 			}
 
 			return $post_id;
@@ -351,24 +355,27 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						get_the_title( $post_data->ID ) . ' ' . PHP_EOL .
 						$this->mail_string_url . ': ' .
 						get_permalink( $post_data->ID );
+
 					// create header data
-					$headers = 'From: ' .
+					$headers = array();
+					$headers[ 'From' ] =
 						get_the_author_meta( 'display_name', $user->ID ) .
 						' (' . get_bloginfo( 'name' ) . ')' .
-						' <' . $user->data->user_email . '>' .
-						PHP_EOL;
-					// send mail
+						' <' . $user->data->user_email . '>';
+
 					if ( $this->options[ 'send_by_bcc' ] ) {
 						$bcc = $to;
 						$to = get_bloginfo( 'admin_email' );
-						$headers .=
-							  'Bcc: '
-							. $bcc
-							. PHP_EOL;
+						$headers[ 'Bcc' ] = $bcc;
 					}
 
+					$to      = apply_filters( 'iac_comment_to',      $to,      $this->options );
+					$subject = apply_filters( 'iac_comment_subject', $subject, $this->options );
+					$message = apply_filters( 'iac_comment_message', $message, $this->options );
+					$headers = apply_filters( 'iac_comment_headers', $headers, $this->options );
+
 					// send mail
-					wp_mail(
+					$this->send_mail(
 						$to,
 						$subject, // email subject
 						$message, // message content
@@ -378,6 +385,33 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			}
 
 			return $comment_id;
+		}
+
+		/**
+		 * builds the header and sends mail
+		 *
+		 * @since 0.0.5 (2012.09.03)
+		 * @param string $to
+		 * @param string $subject
+		 * @param string $message
+		 * @param  array $headers
+		 * @return  bool
+		 */
+		public function send_mail( $to, $subject = '', $message = '', $headers = array() ) {
+
+			foreach ( $headers as $k => $v ) {
+				$headers[] = $k . ': ' . $v;
+				unset( $headers[ $k ] );
+			}
+			$headers = implode( PHP_EOL, $headers ) . PHP_EOL;
+			// send mail
+			return wp_mail(
+				$to,
+				$subject,
+				$message,
+				$headers
+			);
+
 		}
 
 		/**
