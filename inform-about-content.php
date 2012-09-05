@@ -6,7 +6,7 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.5-RC3
+ * Version:     0.0.5-master
  * Licence:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
@@ -26,6 +26,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		# set the default behaviour
 		add_filter( 'iac_default_opt_in', array( 'Inform_About_Content', 'default_opt_in' ) );
 		add_action( 'plugins_loaded' , array( 'Inform_About_Content', 'get_object' ) );
+
+		# some default filters
+		add_filter( 'iac_post_message', 'strip_tags' );
+		add_filter( 'iac_comment_message', 'strip_tags' );
 	}
 
 	class Inform_About_Content {
@@ -404,7 +408,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				unset( $headers[ $k ] );
 			}
 			$headers = implode( PHP_EOL, $headers ) . PHP_EOL;
-			// send mail
+
 			return wp_mail(
 				$to,
 				$subject,
