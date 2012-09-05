@@ -16,7 +16,7 @@
  *
  * @author   fb
  * @since    0.0.1
- * @version  07/19/2012
+ * @version  09/05/2012
  */
 
 if ( ! class_exists( 'Inform_About_Content' ) ) {
