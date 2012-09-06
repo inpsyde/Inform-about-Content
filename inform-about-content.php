@@ -305,10 +305,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$to  = get_bloginfo( 'admin_email' );
 					$headers[ 'Bcc' ] = $bcc;
 				}
-				$to      = apply_filters( 'iac_post_to',      $to,      $this->options );
-				$subject = apply_filters( 'iac_post_subject', $subject, $this->options );
-				$message = apply_filters( 'iac_post_message', $message, $this->options );
-				$headers = apply_filters( 'iac_post_headers', $headers, $this->options );
+				$to      = apply_filters( 'iac_post_to',      $to,      $this->options, $post_id );
+				$subject = apply_filters( 'iac_post_subject', $subject, $this->options, $post_id );
+				$message = apply_filters( 'iac_post_message', $message, $this->options, $post_id );
+				$headers = apply_filters( 'iac_post_headers', $headers, $this->options, $post_id );
 
 				$this->send_mail(
 					$to,
@@ -373,10 +373,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						$headers[ 'Bcc' ] = $bcc;
 					}
 
-					$to      = apply_filters( 'iac_comment_to',      $to,      $this->options );
-					$subject = apply_filters( 'iac_comment_subject', $subject, $this->options );
-					$message = apply_filters( 'iac_comment_message', $message, $this->options );
-					$headers = apply_filters( 'iac_comment_headers', $headers, $this->options );
+					$to      = apply_filters( 'iac_comment_to',      $to,      $this->options, $comment_id );
+					$subject = apply_filters( 'iac_comment_subject', $subject, $this->options, $comment_id );
+					$message = apply_filters( 'iac_comment_message', $message, $this->options, $comment_id );
+					$headers = apply_filters( 'iac_comment_headers', $headers, $this->options, $comment_id );
 
 					// send mail
 					$this->send_mail(
