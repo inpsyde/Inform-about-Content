@@ -23,10 +23,10 @@ Have a look at the premium plugins in our [market](http://marketpress.com).
 
 ## Screenshots
 1. Settings on profile page
-![Screenshot of Settings on profile page](https://raw.github.com/bueltge/Inform-about-Content/master/screenshot-1.png)
+![Screenshot of Settings on profile page](https://raw.github.com/bueltge/Inform-about-Content/master/assets/screenshot-1.png)
 
 2. Settings on Settings → Reading
-![Screenshot of Settings on Settings → Reading](https://raw.github.com/bueltge/Inform-about-Content/master/screenshot-2.png)
+![Screenshot of Settings on Settings → Reading](https://raw.github.com/bueltge/Inform-about-Content/master/assets/screenshot-2.png)
 
 ## API
 ### Plugin settings
