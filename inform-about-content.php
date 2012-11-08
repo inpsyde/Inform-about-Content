@@ -6,8 +6,8 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.5-master
- * Licence:     GPLv3
+ * Version:     0.0.5
+ * License:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
 
@@ -25,10 +25,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		# set the default behaviour
 		add_filter( 'iac_default_opt_in', array( 'Inform_About_Content', 'default_opt_in' ) );
-		add_action( 'plugins_loaded' , array( 'Inform_About_Content', 'get_object' ) );
+		add_action( 'plugins_loaded' ,    array( 'Inform_About_Content', 'get_object' ) );
 
 		# some default filters
-		add_filter( 'iac_post_message', 'strip_tags' );
+		add_filter( 'iac_post_message',    'strip_tags' );
 		add_filter( 'iac_comment_message', 'strip_tags' );
 	}
 
@@ -183,9 +183,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function get_members( $current_user_email = NULL, $context = '' ) {
 
-			$meta_key = $context . '_subscription';
-			$meta_value = '0';
-			$meta_compare = '!=';
+			$meta_key      = $context . '_subscription';
+			$meta_value    = '0';
+			$meta_compare  = '!=';
 			$include_empty = TRUE;
 
 			if ( self::$default_opt_in ) {
@@ -194,17 +194,22 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$include_empty = FALSE;
 			}
 
-			$users = $this->get_users_by_meta( $meta_key, $meta_value, $meta_compare, $include_empty );
+			$users = $this->get_users_by_meta(
+				$meta_key, $meta_value, $meta_compare, $include_empty
+			);
 			$user_addresses = array();
+			
 			if ( ! is_array( $users ) || empty( $users ) )
 				return '';
 
 			foreach ( $users as $user ) {
+				
 				if ( $current_user_email === $user->data->user_email )
 					continue;
+					
 				$user_addresses[] = $user->data->user_email;
 			}
-
+			
 			return implode( ', ', $user_addresses );
 		}
 
@@ -385,6 +390,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						$message, // message content
 						$headers // headers
 					);
+					
 				}
 			}
 
@@ -404,6 +410,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function send_mail( $to, $subject = '', $message = '', $headers = array() ) {
 
 			foreach ( $headers as $k => $v ) {
+				
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
@@ -426,10 +433,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return array
 		 */
 		public function get_options( $default = NULL ) {
-
+			
 			if ( ! empty( $this->options ) )
 				return $this->options;
-
+			
 			return $default;
 		}
 
@@ -443,6 +450,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public static function load_class( $class_name ) {
 
 			$file_name = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
+			
 			if ( file_exists( $file_name ) )
 				require_once $file_name;
 		}
@@ -450,4 +458,3 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 	} // end class Inform_About_Content
 
 } // end if class exists
-?>

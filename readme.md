@@ -1,9 +1,4 @@
 # Inform about Content
-Contributors: [inpsyde](http://inpsyde.com/), [Bueltge](https://github.com/bueltge/), [nullbyte](https://github.com/nullbyte/), [dnaber-de](https://github.com/dnaber-de/), [hughwillfayle](http://dasllama.github.com/)  
-Tags: mail, comment, post  
-Requires at least: 3.0  
-Tested up to: 3.5-alpha  
-Stable tag: 0.0.4
 
 Informs all users of a blog about a new post and approved comments via email
 
@@ -12,9 +7,6 @@ Plugin which sends emails to us from WordPress, for comments and new posts, exce
 
 ### Made by [Inpsyde](http://inpsyde.com) &middot; We love WordPress
 Have a look at the premium plugins in our [market](http://marketpress.com).
-
-### Bugs, technical hints or contribute
-Please give me feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
 
 
 ## Installation
@@ -31,7 +23,10 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 
 ## Screenshots
 1. Settings on profile page
+![Screenshot of Settings on profile page](https://raw.github.com/bueltge/Inform-about-Content/master/assets/screenshot-1.png)
+
 2. Settings on Settings → Reading
+![Screenshot of Settings on Settings → Reading](https://raw.github.com/bueltge/Inform-about-Content/master/assets/screenshot-2.png)
 
 ## API
 ### Plugin settings
@@ -60,6 +55,12 @@ $user_settings = apply_filters( 'iac_get_user_settings', array(), $user_id );
 
 
 ## Other Notes
+### Bugs, technical hints or contribute
+Please give me feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
+
+### Authors, Contributors
+[Contributors Stats](https://github.com/bueltge/Inform-about-Content/graphs/contributors)
+
 ### Localizations
 * Thanks to [Frank B&uuml;ltge](http://bueltge.de/ "Frank B&uuml;ltge") for german language file
 * Thanks to [Brian Flores](http://www.inmotionhosting.com/) for spanish translation
@@ -73,15 +74,4 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 ## Changelog
-### 0.0.5 
-* Option to send email by Bcc-header
-* API to change the plugins default behaviour (opt-in/opt-out)
-
-### 0.0.4
-* small fix for hook to use static method
-
-### 0.0.3
-* first release on wp.org
-
-### 0.0.1
-* Release first version
+See [commits](https://github.com/bueltge/Inform-about-Content/commits/master) or read short [version](http://wordpress.org/extend/plugins/inform-about-content/changelog/)
