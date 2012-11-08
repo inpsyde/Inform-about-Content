@@ -6,7 +6,7 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.5
+ * Version:     0.0.5-master
  * License:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
@@ -198,18 +198,18 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$meta_key, $meta_value, $meta_compare, $include_empty
 			);
 			$user_addresses = array();
-			
+
 			if ( ! is_array( $users ) || empty( $users ) )
 				return '';
 
 			foreach ( $users as $user ) {
-				
+
 				if ( $current_user_email === $user->data->user_email )
 					continue;
-					
+
 				$user_addresses[] = $user->data->user_email;
 			}
-			
+
 			return implode( ', ', $user_addresses );
 		}
 
@@ -346,11 +346,35 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				if ( '1' === $comment_data->comment_approved || $comment_status ) {
 					// get data from post to this comment
 					$post_data = get_post( $comment_data->comment_post_ID );
-					// the comment author
-					$user = get_userdata( $comment_data->user_id );
+
+					// the commenter
+					$commenter = array(
+						'name'  => 'Annonymous',
+						'email' => '',
+						'url'   => ''
+					);
+					if ( 0 != $comment_data->user_id && $user = get_userdata( $comment_data->user_id ) && $user ) {
+						// the comment author
+						$user = get_userdata( $comment_data->user_id );
+						$commenter[ 'name' ]  = get_the_author_meta( 'display_name', $user->ID );
+						$commenter[ 'email' ] = $user->data->user_email;
+						$commenter[ 'url' ]   = $user->data->user_url;
+					} else {
+						if ( ! empty( $comment_data->comment_author ) )
+							$commenter[ 'name' ] = $comment_data->comment_author;
+
+						# don't propagate email-address of non-registered users by default
+						if ( ! empty( $comment_data->comment_author_email ) ) {
+							if ( TRUE === apply_filters( 'iac_comment_author_email_to_header', FALSE ) )
+								$commenter[ 'email' ] = $comment_data->comment_author_email;
+						}
+
+						if ( ! empty( $comment_data->comment_author_url ) )
+							$commenter[ 'url' ] = $comment_data->comment_author_url;
+					}
 
 					// email addresses
-					$to = $this->get_members( $user->data->user_email, 'comment' );
+					$to = $this->get_members( $commenter[ 'email' ], 'comment' );
 					if ( empty( $to ) )
 						return $comment_id;
 
@@ -359,7 +383,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					// message content
 					$message = $comment_data->comment_content . ' ' . PHP_EOL .
 						$this->mail_string_by . ' ' .
-						get_the_author_meta( 'display_name', $user->ID ) . ' ' .
+						$commenter[ 'name' ] . ' ' .
 						$this->mail_string_to . ' ' .
 						get_the_title( $post_data->ID ) . ' ' . PHP_EOL .
 						$this->mail_string_url . ': ' .
@@ -367,10 +391,17 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 					// create header data
 					$headers = array();
-					$headers[ 'From' ] =
-						get_the_author_meta( 'display_name', $user->ID ) .
-						' (' . get_bloginfo( 'name' ) . ')' .
-						' <' . $user->data->user_email . '>';
+					if ( ! empty( $commenter[ 'email' ] ) ) {
+						$headers[ 'From' ] =
+							$commenter[ 'name' ] .
+							' (' . get_bloginfo( 'name' ) . ')' .
+							' <' . $commenter[ 'email' ] . '>';
+					} else {
+						$headers[ 'From' ] =
+							$commenter[ 'name' ] .
+							' (' . get_bloginfo( 'name' ) . ')' .
+							' <' . get_option( 'admin_email' ) . '>';
+					}
 
 					if ( $this->options[ 'send_by_bcc' ] ) {
 						$bcc = $to;
@@ -390,7 +421,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						$message, // message content
 						$headers // headers
 					);
-					
+
 				}
 			}
 
@@ -410,7 +441,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function send_mail( $to, $subject = '', $message = '', $headers = array() ) {
 
 			foreach ( $headers as $k => $v ) {
-				
+
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
@@ -433,10 +464,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return array
 		 */
 		public function get_options( $default = NULL ) {
-			
+
 			if ( ! empty( $this->options ) )
 				return $this->options;
-			
+
 			return $default;
 		}
 
@@ -450,7 +481,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public static function load_class( $class_name ) {
 
 			$file_name = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
-			
+
 			if ( file_exists( $file_name ) )
 				require_once $file_name;
 		}
