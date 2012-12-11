@@ -144,7 +144,18 @@ class Iac_Settings {
 	 */
 	public function description() {
 
-		return;
+		# monitor the current status of user-selection (opt-in or opt-out)
+		$default = Inform_About_Content::default_opt_in( NULL );
+		$opt_in = apply_filters( 'iac_default_opt_in', $default );
+
+		$description = $opt_in
+			? __( 'Note: Users must opt-in to e-mail notifications by default', Inform_About_Content::TEXTDOMAIN )
+			: __( 'Note: Users must opt-out from e-mail notifications by default', Inform_About_Content::TEXTDOMAIN );
+
+		printf(
+			'<p class="description">%s</p>',
+			$description
+		);
 	}
 
 	/**
