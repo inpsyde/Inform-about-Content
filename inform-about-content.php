@@ -313,16 +313,18 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$to  = get_bloginfo( 'admin_email' );
 					$headers[ 'Bcc' ] = $bcc;
 				}
-				$to      = apply_filters( 'iac_post_to',      $to,      $this->options, $post_id );
-				$subject = apply_filters( 'iac_post_subject', $subject, $this->options, $post_id );
-				$message = apply_filters( 'iac_post_message', $message, $this->options, $post_id );
-				$headers = apply_filters( 'iac_post_headers', $headers, $this->options, $post_id );
+				$to          = apply_filters( 'iac_post_to',          $to,      $this->options, $post_id );
+				$subject     = apply_filters( 'iac_post_subject',     $subject, $this->options, $post_id );
+				$message     = apply_filters( 'iac_post_message',     $message, $this->options, $post_id );
+				$headers     = apply_filters( 'iac_post_headers',     $headers, $this->options, $post_id );
+				$attachments = apply_filters( 'iac_post_attachments', array(),  $this->options, $post_id );
 
 				$this->send_mail(
 					$to,
 					$subject,
 					$message,
-					$headers
+					$headers,
+					$attachments
 				);
 
 			}
@@ -413,17 +415,19 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						$headers[ 'Bcc' ] = $bcc;
 					}
 
-					$to      = apply_filters( 'iac_comment_to',      $to,      $this->options, $comment_id );
-					$subject = apply_filters( 'iac_comment_subject', $subject, $this->options, $comment_id );
-					$message = apply_filters( 'iac_comment_message', $message, $this->options, $comment_id );
-					$headers = apply_filters( 'iac_comment_headers', $headers, $this->options, $comment_id );
+					$to          = apply_filters( 'iac_comment_to',          $to,      $this->options, $comment_id );
+					$subject     = apply_filters( 'iac_comment_subject',     $subject, $this->options, $comment_id );
+					$message     = apply_filters( 'iac_comment_message',     $message, $this->options, $comment_id );
+					$headers     = apply_filters( 'iac_comment_headers',     $headers, $this->options, $comment_id );
+					$attachments = apply_filters( 'iac_comment_attachments', array(),  $this->options, $comment_id );
 
 					// send mail
 					$this->send_mail(
 						$to,
 						$subject, // email subject
 						$message, // message content
-						$headers // headers
+						$headers, // headers
+						$attachments // attachments
 					);
 
 				}
@@ -440,9 +444,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @param string $subject
 		 * @param string $message
 		 * @param  array $headers
+		 * @param  array $attachments
 		 * @return  bool
 		 */
-		public function send_mail( $to, $subject = '', $message = '', $headers = array() ) {
+		public function send_mail( $to, $subject = '', $message = '', $headers = array(), $attachments = array() ) {
 
 			foreach ( $headers as $k => $v ) {
 
@@ -455,7 +460,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$to,
 				$subject,
 				$message,
-				$headers
+				$headers,
+				$attachments
 			);
 
 		}
