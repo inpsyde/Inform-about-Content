@@ -6,7 +6,7 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.5-master
+ * Version:     0.0.6-master
  * License:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
