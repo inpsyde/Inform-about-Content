@@ -142,6 +142,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			// load additional features
 			Iac_Threaded_Mails::get_instance();
+			Iac_Attach_Media::get_instance();
 		}
 
 		/**
