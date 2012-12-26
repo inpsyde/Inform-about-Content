@@ -140,6 +140,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			if ( $this->inform_about_comments )
 				add_action( 'comment_post', array( $this, 'inform_about_comment' ) );
 
+			// load additional features
+			Iac_Threaded_Mails::get_instance();
 		}
 
 		/**
