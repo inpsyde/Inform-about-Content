@@ -139,6 +139,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
 			if ( $this->inform_about_comments )
 				add_action( 'comment_post', array( $this, 'inform_about_comment' ) );
+
 		}
 
 		/**
@@ -353,7 +354,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						'email' => '',
 						'url'   => ''
 					);
-					if ( 0 != $comment_data->user_id && $user = get_userdata( $comment_data->user_id ) && $user ) {
+
+					if ( 0 != $comment_data->user_id && $user = get_userdata( $comment_data->user_id ) ) {
 						// the comment author
 						$user = get_userdata( $comment_data->user_id );
 						$commenter[ 'name' ]  = get_the_author_meta( 'display_name', $user->ID );
