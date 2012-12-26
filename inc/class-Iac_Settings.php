@@ -21,7 +21,8 @@ class Iac_Settings {
 	 * @var array
 	 */
 	protected static $default_options = array(
-		'send_by_bcc' => '0' # use strings here '1' or '0'
+		'send_by_bcc' => '0',      # use strings here '1' or '0'
+		'send_attachments' => '0'  # also '1' or '0'
 	);
 
 	/**
@@ -97,6 +98,19 @@ class Iac_Settings {
 				'label_for' => 'send_by_bcc'
 			)
 		);
+
+		add_settings_field(
+			'send_attachments',
+			__( 'Attach media files to the notification email', Inform_About_Content::TEXTDOMAIN ),
+			array( $this, 'checkbox' ),
+			$this->page,
+			$this->section,
+			array(
+				'id'        => 'send_attachments',
+				'name'      => self::OPTION_KEY . '[send_attachments]',
+				'label_for' => 'send_attachments'
+			)
+		);
 	}
 
 	/**
@@ -134,6 +148,11 @@ class Iac_Settings {
 		else
 			$request[ 'send_by_bcc' ] = '0';
 
+		if ( ! empty( $request[ 'send_attachments' ] ) && '1' === $request[ 'send_attachments' ] )
+			$request[ 'send_attachments' ] = '1';
+		else
+			$request[ 'send_attachments' ] = '0';
+
 		return $request;
 	}
 
@@ -170,7 +189,13 @@ class Iac_Settings {
 		if ( ! is_array( $options ) ) {
 			$options = self::$default_options;
 			update_option( self::OPTION_KEY, $options );
+		} else {
+			foreach ( self::$default_options as $key => $value ) {
+				if ( ! isset( $options[ $key ] ) )
+					$options[ $key ] = $value;
+			}
 		}
+
 		$this->options = $options;
 	}
 
