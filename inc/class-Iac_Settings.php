@@ -21,8 +21,9 @@ class Iac_Settings {
 	 * @var array
 	 */
 	protected static $default_options = array(
-		'send_by_bcc' => '0',      # use strings here '1' or '0'
-		'send_attachments' => '0'  # also '1' or '0'
+		'send_by_bcc'         => '0', # use strings here '1' or '0'
+		'send_attachments'    => '0', # also '1' or '0'
+		'attachment_max_size' => 2097152 # 2Mib
 	);
 
 	/**
