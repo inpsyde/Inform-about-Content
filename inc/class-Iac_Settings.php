@@ -23,7 +23,8 @@ class Iac_Settings {
 	protected static $default_options = array(
 		'send_by_bcc'         => '0', # use strings here '1' or '0'
 		'send_attachments'    => '0', # also '1' or '0'
-		'attachment_max_size' => 2097152 # 2Mib
+		'attachment_max_size' => 2097152, # 2Mib
+		'bcc_to_recipient'    => ''
 	);
 
 	/**
@@ -101,6 +102,21 @@ class Iac_Settings {
 		);
 
 		add_settings_field(
+			'bcc_to_recipient',
+			__( 'To: header for Bcc-option is set.', Inform_About_Content::TEXTDOMAIN ),
+			array( $this, 'text' ),
+			$this->page,
+			$this->section,
+			array(
+				'id'          => 'bcc_to_recipient',
+				'name'        => self::OPTION_KEY . '[bcc_to_recipient]',
+				'label_for'   => 'bcc_to_recipient',
+				'type'        => 'email',
+				'description' => __( 'The eMail needs a to-header if all addresses are set as <code>bcc</code>. Leave empty to use the <code>admin_email</code> option.', Inform_About_Content::TEXTDOMAIN )
+			)
+		);
+
+		add_settings_field(
 			'send_attachments',
 			__( 'Attach media files to the notification email', Inform_About_Content::TEXTDOMAIN ),
 			array( $this, 'checkbox' ),
@@ -134,6 +150,39 @@ class Iac_Settings {
 			<?php checked( $current, '1' ); ?>
 		/>
 		<?php
+		if ( ! empty( $attr[ 'description' ] ) ) { ?>
+			<p class="description"><?php echo $attr[ 'description' ]; ?></p>
+			<?php
+		}
+	}
+
+	/**
+	 * prints the form field
+	 *
+	 * @param array $attr
+	 * @return void
+	 */
+	public function text( $attr ) {
+
+		$id      = $attr[ 'label_for' ];
+		$name    = $attr[ 'name' ];
+		$current = $this->options[ $id ];
+		$type    = isset( $attr[ 'type' ] )
+			? $attr[ 'type' ]
+			: 'text';
+		$value = esc_attr( $this->options[ $id ] );
+		?>
+		<input
+			type="<?php echo $type; ?>"
+			name="<?php echo $name; ?>"
+			id="<?php echo $attr[ 'label_for' ]; ?>"
+			value="<?php echo $value; ?>"
+		/>
+		<?php
+		if ( ! empty( $attr[ 'description' ] ) ) { ?>
+			<p class="description"><?php echo $attr[ 'description' ]; ?></p>
+			<?php
+		}
 	}
 
 	/**

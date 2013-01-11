@@ -311,7 +311,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 				if ( $this->options[ 'send_by_bcc' ] ) {
 					$bcc = $to;
-					$to  = get_bloginfo( 'admin_email' );
+					$to = empty( $this->options[ 'bcc_to_recipient' ] )
+						? get_bloginfo( 'admin_email' )
+						: $this->options[ 'bcc_to_recipient' ];
 					$headers[ 'Bcc' ] = $bcc;
 				}
 				$to          = apply_filters( 'iac_post_to',          $to,      $this->options, $post_id );
@@ -412,7 +414,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 					if ( $this->options[ 'send_by_bcc' ] ) {
 						$bcc = $to;
-						$to = get_bloginfo( 'admin_email' );
+						$to = empty( $this->options[ 'bcc_to_recipient' ] )
+							? get_bloginfo( 'admin_email' )
+							: $this->options[ 'bcc_to_recipient' ];
 						$headers[ 'Bcc' ] = $bcc;
 					}
 
