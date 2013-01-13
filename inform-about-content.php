@@ -131,7 +131,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
 			#apply a hook to get the current settings
-			add_filter( 'iac_get_options', array( $this, 'get_options' )  );
+			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
@@ -295,11 +295,18 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
 
 				// message content
-				$message = $post_data->post_content . ' ' . PHP_EOL .
-					$this->mail_string_by . ' ' .
-					get_the_author_meta( 'display_name', $user->ID ) . ' ' . PHP_EOL .
-					$this->mail_string_url . ': ' .
-					get_permalink( $post_id );
+				$message = array(
+					$post_data->post_content,
+					implode( ' ', array(
+						$this->mail_string_by,
+						get_the_author_meta( 'display_name', $user->ID )
+					) ),
+					implode( ': ', array(
+						$this->mail_string_url,
+						get_permalink( $post_id )
+					) )
+				);
+				$message = implode( PHP_EOL, $message );
 
 				# create header data
 				$headers = array();
@@ -391,13 +398,23 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					// email subject
 					$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
 					// message content
-					$message = $comment_data->comment_content . ' ' . PHP_EOL .
-						$this->mail_string_by . ' ' .
-						$commenter[ 'name' ] . ' ' .
-						$this->mail_string_to . ' ' .
-						get_the_title( $post_data->ID ) . ' ' . PHP_EOL .
-						$this->mail_string_url . ': ' .
-						get_permalink( $post_data->ID );
+					$message = array(
+						#comment content
+						$comment_data->comment_content,
+						#author and title
+						implode( ' ', array(
+							$this->mail_string_by,
+							$commenter[ 'name' ],
+							$this->mail_string_to,
+							get_the_title( $post_data->ID ),
+						) ),
+						# the posts permalink
+						implode( ': ', array(
+							$this->mail_string_url,
+							get_permalink( $post_data->ID )
+						) )
+					);
+					$message = implode( PHP_EOL, $message );
 
 					// create header data
 					$headers = array();
@@ -414,7 +431,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					}
 
 					if ( $this->options[ 'send_by_bcc' ] ) {
+						#copy list of recipients to 'bcc'
 						$bcc = $to;
+						# set a 'To' header
 						$to = empty( $this->options[ 'bcc_to_recipient' ] )
 							? get_bloginfo( 'admin_email' )
 							: $this->options[ 'bcc_to_recipient' ];
@@ -428,13 +447,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$attachments = apply_filters( 'iac_comment_attachments', array(),  $this->options, $comment_id );
 					$signature   = apply_filters( 'iac_comment_signature',   '',       $this->options, $comment_id );
 
-					// send mail
 					$this->send_mail(
 						$to,
-						$subject, // email subject
-						$this->append_signature( $message, $signature ), // message content
-						$headers, // headers
-						$attachments // attachments
+						$subject,
+						$this->append_signature( $message, $signature ),
+						$headers,
+						$attachments
 					);
 
 				}
@@ -488,7 +506,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			return $message . $separator . $signature;
 		}
-
 
 		/**
 		 * getter for the current settings
