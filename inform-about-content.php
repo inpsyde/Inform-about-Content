@@ -461,7 +461,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
-			$headers = implode( PHP_EOL, $headers ) . PHP_EOL;
 
 			return wp_mail(
 				$to,
