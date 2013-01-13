@@ -30,6 +30,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		# some default filters
 		add_filter( 'iac_post_message',    'strip_tags' );
 		add_filter( 'iac_comment_message', 'strip_tags' );
+
+		# since 0.0.6
+		add_filter( 'iac_post_message',    'strip_shortcodes' );
+		add_filter( 'iac_comment_message', 'strip_shortcodes' );
 	}
 
 	class Inform_About_Content {
