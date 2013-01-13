@@ -321,11 +321,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$message     = apply_filters( 'iac_post_message',     $message, $this->options, $post_id );
 				$headers     = apply_filters( 'iac_post_headers',     $headers, $this->options, $post_id );
 				$attachments = apply_filters( 'iac_post_attachments', array(),  $this->options, $post_id );
+				$signature   = apply_filters( 'iac_post_signature',   '',       $this->options, $post_id );
 
 				$this->send_mail(
 					$to,
 					$subject,
-					$message,
+					$this->append_signature( $message, $signature ),
 					$headers,
 					$attachments
 				);
@@ -425,12 +426,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$message     = apply_filters( 'iac_comment_message',     $message, $this->options, $comment_id );
 					$headers     = apply_filters( 'iac_comment_headers',     $headers, $this->options, $comment_id );
 					$attachments = apply_filters( 'iac_comment_attachments', array(),  $this->options, $comment_id );
+					$signature   = apply_filters( 'iac_comment_signature',   '',       $this->options, $comment_id );
 
 					// send mail
 					$this->send_mail(
 						$to,
 						$subject, // email subject
-						$message, // message content
+						$this->append_signature( $message, $signature ), // message content
 						$headers, // headers
 						$attachments // attachments
 					);
@@ -468,8 +470,26 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$headers,
 				$attachments
 			);
-
 		}
+
+		/**
+		 * apply a signature-text to the email message
+		 *
+		 * @since 0.0.6 (2013.01.13)
+		 * @param string $message,
+		 * @param string $signature (Optional)
+		 * @return string
+		 */
+		public function append_signature( $message, $signature = '' ) {
+
+			if ( empty( $signature ) )
+				return $message;
+
+			$separator = apply_filters( 'iac_signature_separator', str_repeat( PHP_EOL, 2 ) . '--' . PHP_EOL );
+
+			return $message . $separator . $signature;
+		}
+
 
 		/**
 		 * getter for the current settings
