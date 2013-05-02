@@ -142,7 +142,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			if ( $this->inform_about_posts )
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
 			if ( $this->inform_about_comments )
-				add_action( 'comment_post', array( $this, 'inform_about_comment' ) );
+				add_action( 'wp_insert_comment', array( $this, 'inform_about_comment' ) );
+				// also possible is the hook comment_post
 			
 			// Disable the default core notification (filter ignores __return_false)
 			add_filter( 'pre_option_comments_notify', '__return_zero' );
