@@ -14,9 +14,9 @@
 /**
  * Informs all users of a blog about a new post and approved comments via email
  *
- * @author   fb
+ * @author   fb, dn
  * @since    0.0.1
- * @version  09/05/2012
+ * @version  05/02/2013
  */
 
 if ( ! class_exists( 'Inform_About_Content' ) ) {
@@ -143,7 +143,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
 			if ( $this->inform_about_comments )
 				add_action( 'comment_post', array( $this, 'inform_about_comment' ) );
-
+			
+			// Disable the default core notification (filter ignores __return_false)
+			add_filter( 'pre_option_comments_notify', '__return_zero' );
+			
 			// load additional features
 			Iac_Threaded_Mails::get_instance();
 			Iac_Attach_Media::get_instance();
