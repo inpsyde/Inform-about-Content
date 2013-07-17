@@ -75,6 +75,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public $mail_string_url;
 
 		/**
+		 * saved transit posts
+		 *
+		 * @since 2013-07-17
+		 * @var array
+		 */
+		protected $transit_posts = array();
+
+		/**
 		 * plugin options
 		 *
 		 * @since 0.0.5
@@ -139,15 +147,17 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
-			if ( $this->inform_about_posts )
+			if ( $this->inform_about_posts ) {
+				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
+			}
 			if ( $this->inform_about_comments )
 				add_action( 'wp_insert_comment', array( $this, 'inform_about_comment' ) );
 				// also possible is the hook comment_post
-			
+
 			// Disable the default core notification (filter ignores __return_false)
 			add_filter( 'pre_option_comments_notify', '__return_zero' );
-			
+
 			// load additional features
 			Iac_Threaded_Mails::get_instance();
 			Iac_Attach_Media::get_instance();
@@ -278,8 +288,28 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
-		 * Send mail, if publish a new post
+		 * catch post status transition of each post
 		 *
+		 * @wp-hook transition_post_status
+		 * @since 2013.07.17
+		 * @param string $new_status
+		 * @param string $old_status
+		 * @param WP_Post $post
+		 * @return void
+		 */
+		public function save_transit_posts( $new_status, $old_status, $post ) {
+
+			$this->transit_posts[ $post->ID ] = array(
+				'old_status' => $old_status,
+				'new_status' => $new_status
+			);
+		}
+
+
+		/**
+		 * Send mail, if changes a status form not 'publish' to 'publish'
+		 *
+		 * @wp_hook publish_post
 		 * @access  public
 		 * @sinde   0.0.1
 		 * @used    get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
@@ -289,6 +319,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function inform_about_posts( $post_id = FALSE ) {
 
 			if ( $post_id ) {
+				if ( ! isset( $this->transit_posts[ $post_id ] ) )
+					return $post_id;
+
+				$transit = $this->transit_posts[ $post_id ];
+				if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] )
+					return $post_id;
+
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
