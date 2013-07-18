@@ -27,6 +27,7 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 1. Unpack the download-package
 1. Upload the folder and all folder and files includes this to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Optional: Change global settings on 'Settings' --> 'Reading'
 1. Thats all
 
 
