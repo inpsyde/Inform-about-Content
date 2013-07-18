@@ -131,17 +131,23 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  void
 		 */
 		public function __construct() {
-			spl_autoload_register( array( __CLASS__, 'load_class' ) );
-
-			# change the default behaviour from outside
+			
+			// check for php 5.2
+			// @see  http://www.php.net/manual/en/spl.installation.php
+			if ( function_exists( 'spl_autoload_register' ) )
+				spl_autoload_register( array( __CLASS__, 'load_class' ) );
+			else
+				$this->load_class( NULL );
+			
+			// change the default behaviour from outside
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
-
+			
 			// set srings for mail
 			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
 			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
-
+			
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
@@ -153,9 +159,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			);
 			#apply a hook to get the current settings
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
-
+			
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
-
+			
 			if ( $this->inform_about_posts ) {
 				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
@@ -163,15 +169,15 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			if ( $this->inform_about_comments )
 				add_action( 'wp_insert_comment', array( $this, 'inform_about_comment' ) );
 				// also possible is the hook comment_post
-
+			
 			// Disable the default core notification (filter ignores __return_false)
 			add_filter( 'pre_option_comments_notify', '__return_zero' );
-
+			
 			// load additional features
 			Iac_Threaded_Mails::get_instance();
 			Iac_Attach_Media::get_instance();
 		}
-
+		
 		/**
 		 * Return Textdomain string
 		 *
@@ -615,10 +621,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if ( ! empty( $this->options ) )
 				return $this->options;
-
+			
 			return $default;
 		}
-
+		
 		/**
 		 * autoloader for the classes
 		 *
@@ -627,13 +633,20 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return void
 		 */
 		public static function load_class( $class_name ) {
-
-			$file_name = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
-
-			if ( file_exists( $file_name ) )
-				require_once $file_name;
+			// if spl_autoload_register not exist
+			if ( NULL === $class_name ) {
+				// load required classes
+				foreach( glob( dirname( __FILE__ ) . '/inc/*.php' ) as $path )
+					require_once $path;
+			} else {
+				// if param have a class string
+				$path = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
+				
+				if ( file_exists( $path ) )
+					require_once $path;
+			}
 		}
-
+		
 	} // end class Inform_About_Content
 
 } // end if class exists

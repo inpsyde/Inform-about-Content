@@ -12,12 +12,13 @@ Have a look at the premium plugins in our [market](http://marketpress.com).
 ## Installation
 ### Requirements 
 * WordPress version 3.0 and later (tested at 3.4.1)
-* PHP 5.3
+* PHP 5.3; maybe 5.2, but untested
 
 ### Installation
 1. Unpack the download-package
 1. Upload the folder and all folder and files includes this to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Optional: Change global settings on 'Settings' → 'Reading'
 1. Thats all
 
 
@@ -56,7 +57,7 @@ $user_settings = apply_filters( 'iac_get_user_settings', array(), $user_id );
 
 ## Other Notes
 ### Bugs, technical hints or contribute
-Please give me feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
+Please give us feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
 
 ### Authors, Contributors
 [Contributors Stats](https://github.com/bueltge/Inform-about-Content/graphs/contributors)
