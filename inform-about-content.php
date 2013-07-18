@@ -31,6 +31,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		add_filter( 'iac_post_message',    'strip_tags' );
 		add_filter( 'iac_comment_message', 'strip_tags' );
 
+		add_filter( 'iac_post_message',    array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
+		add_filter( 'iac_comment_message', array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
+
 		# since 0.0.6
 		add_filter( 'iac_post_message',    'strip_shortcodes' );
 		add_filter( 'iac_comment_message', 'strip_shortcodes' );
@@ -142,6 +145,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
+			$this->options[ 'static_options' ] = array(
+				'mail_string_to'             => $this->mail_string_to,
+				'mail_string_by'             => $this->mail_string_by,
+				'mail_string_url'            => $this->mail_string_url,
+				'mail_string_new_comment_to' => $this->mail_string_new_comment_to
+			);
 			#apply a hook to get the current settings
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
 
@@ -340,18 +349,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
 
 				// message content
-				$message = array(
-					$post_data->post_content,
-					implode( ' ', array(
-						$this->mail_string_by,
-						get_the_author_meta( 'display_name', $user->ID )
-					) ),
-					implode( ': ', array(
-						$this->mail_string_url,
-						get_permalink( $post_id )
-					) )
-				);
-				$message = implode( PHP_EOL, $message );
+				$message = $post_data->post_content;
 
 				# create header data
 				$headers = array();
@@ -443,23 +441,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					// email subject
 					$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
 					// message content
-					$message = array(
-						#comment content
-						$comment_data->comment_content,
-						#author and title
-						implode( ' ', array(
-							$this->mail_string_by,
-							$commenter[ 'name' ],
-							$this->mail_string_to,
-							get_the_title( $post_data->ID ),
-						) ),
-						# the posts permalink
-						implode( ': ', array(
-							$this->mail_string_url,
-							get_permalink( $post_data->ID )
-						) )
-					);
-					$message = implode( PHP_EOL, $message );
+					$message = $comment_data->comment_content;
 
 					// create header data
 					$headers = array();
@@ -550,6 +532,76 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$separator = apply_filters( 'iac_signature_separator', str_repeat( PHP_EOL, 2 ) . '--' . PHP_EOL );
 
 			return $message . $separator . $signature;
+		}
+
+		/**
+		 * add information about sender to the end of the
+		 * content
+		 *
+		 * @wp_hook iac_post_message
+		 * @wp_hook iac_comment_message
+		 * @since 2013-07-18
+		 * @param string $message
+		 * @param array $options
+		 * @param $id
+		 * @return string
+		 */
+		public static function sender_to_message( $message, $options, $id ) {
+
+			$author    = NULL;
+			$commenter = NULL;
+			$parts     = array();
+			if ( 'iac_post_message' == current_filter() ) {
+				$post = get_post( $id );
+				$author = get_userdata( $post->post_author );
+				if ( ! is_a( $author, 'WP_User' ) )
+					return $message;
+
+				$parts = array(
+					'', # linefeed
+					implode( ' ', array(
+						$options[ 'static_options' ][ 'mail_string_by' ],
+						$author->data->display_name
+					) ),
+					implode( ': ', array(
+						$options[ 'static_options' ][ 'mail_string_url' ],
+						get_permalink( $post )
+					) )
+				);
+			} elseif ( 'iac_comment_message' == current_filter() ) {
+				$comment   = get_comment( $id );
+				$post      = get_post( $comment->comment_post_ID );
+				$commenter = array(
+						'name'  => 'Annonymous'
+				);
+				if ( 0 != $comment->user_id ) {
+					$author  = get_userdata( $comment->user_id );
+					$commenter[ 'name' ] = $author->data->display_name;
+				} else {
+					if ( ! empty( $comment->comment_author ) )
+						$commenter[ 'name' ] = $comment->comment_author;
+				}
+				$parts = array(
+					'',
+					#author and title
+					implode( ' ', array(
+						$options[ 'static_options' ][ 'mail_string_by' ],
+						$commenter[ 'name' ],
+						$options[ 'static_options' ][ 'mail_string_to' ],
+						get_the_title( $post->ID ),
+					) ),
+					# the posts permalink
+					implode( ': ', array(
+						$options[ 'static_options' ][ 'mail_string_url' ],
+						get_permalink( $post )
+					) )
+				);
+			}
+
+			if ( ! empty( $parts ) )
+				$message .= implode( PHP_EOL, $parts );
+
+			return $message;
 		}
 
 		/**
