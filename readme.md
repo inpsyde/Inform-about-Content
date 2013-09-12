@@ -1,4 +1,4 @@
-# Inform about Content
+# Informer
 
 Informs all users of a blog about a new post and approved comments via email
 

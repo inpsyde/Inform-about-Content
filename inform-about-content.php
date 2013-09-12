@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Inform about Content
+ * Plugin Name: Informer
  * Plugin URI:  http://wordpress.org/extend/plugins/inform-about-content/
  * Text Domain: inform_about_content
  * Domain Path: /languages

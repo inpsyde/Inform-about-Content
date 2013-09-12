@@ -1,7 +1,7 @@
 <?php
 
 /**
- * handles the settings for the Inform About Content plugin
+ * handles the settings for the Informer plugin
  *
  * @since 0.0.5
  */

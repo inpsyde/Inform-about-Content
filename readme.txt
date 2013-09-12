@@ -1,8 +1,8 @@
-=== Inform about Content ===
+=== Informer ===
 Contributors: inpsyde, Bueltge, dnaber-de, hughwillfayle
 Tags: mail, comment, post
 Requires at least: 3.0
-Tested up to: 3.6-Beta2
+Tested up to: 3.7-alpha
 Stable tag: 0.0.5
 
 Informs all users of a blog about a new post and approved comments via email

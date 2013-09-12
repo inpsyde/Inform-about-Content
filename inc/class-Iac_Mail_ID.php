@@ -3,7 +3,7 @@
 /**
  * Generates an ID for Comments an Posts
  *
- * @package Inform About Content
+ * @package Informer
  * @since 0.0.6
  */
 
