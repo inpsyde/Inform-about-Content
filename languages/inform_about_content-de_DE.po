@@ -1,112 +1,108 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: Inform about Content v0.0.6-master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2013-07-18 08:28+0100\n"
+"PO-Revision-Date: 2013-07-18 08:44+0100\n"
+"Last-Translator: Frank Bueltge <frank@bueltge.de>\n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-Language: \n"
-"X-Poedit-Country: \n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
-"X-Poedit-Basepath: \n"
-"X-Poedit-Bookmarks: \n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Textdomain-Support: yes"
 
-#: inc/class-Iac_Profile_Settings.php:104
-#@ inform_about_content
-msgid "Inform about Content?"
-msgstr "Information über neue Inhalte?"
-
-#: inc/class-Iac_Profile_Settings.php:109
-#@ inform_about_content
-msgid "Posts subscription"
-msgstr "Artikelabonnement"
-
-#: inc/class-Iac_Profile_Settings.php:114
-#@ inform_about_content
-msgid "Inform about new posts via e-mail, without your own posts."
-msgstr "Informiere dich über neue Artikel via E-Mail, ohne deine eigenen Artikel."
-
-#: inc/class-Iac_Profile_Settings.php:119
-#@ inform_about_content
-msgid "Comments subscription"
-msgstr "Kommentarabonnement"
-
-#: inc/class-Iac_Profile_Settings.php:124
-#@ inform_about_content
-msgid "Inform about new comments via e-mail, without your own comments."
-msgstr "Informiere dich über neue Kommentare via E-Mail, ohne deine eigenen Kommentare."
-
-#. translators: plugin header field 'Name'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "Inform about Content"
-msgstr "Inform about Content - Information über Inhalt"
-
-#. translators: plugin header field 'AuthorURI'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "http://inpsyde.com/"
-msgstr ""
-
-#: inform-about-content.php:120
-#@ inform_about_content
+# @ inform_about_content
+#: inform-about-content.php:143
 msgid "new comment to"
 msgstr "neuer Kommentar zu"
 
-#: inform-about-content.php:122
-#@ inform_about_content
+# @ inform_about_content
+#: inform-about-content.php:144
+msgid "to:"
+msgstr "zu:"
+
+# @ inform_about_content
+#: inform-about-content.php:145
 msgid "by"
 msgstr "von"
 
-#: inform-about-content.php:123
-#@ inform_about_content
+# @ inform_about_content
+#: inform-about-content.php:146
 msgid "URL"
 msgstr "URL"
 
-#: inc/class-Iac_Settings.php:83
-#@ inform_about_content
+# @ inform_about_content
+#: inc/class-Iac_Profile_Settings.php:104
+msgid "Inform about Content?"
+msgstr "Information über neue Inhalte?"
+
+# @ inform_about_content
+#: inc/class-Iac_Profile_Settings.php:109
+msgid "Posts subscription"
+msgstr "Artikelabonnement"
+
+# @ inform_about_content
+#: inc/class-Iac_Profile_Settings.php:114
+msgid "Inform about new posts via e-mail, without your own posts."
+msgstr ""
+"Informiere dich über neue Artikel via E-Mail, ohne deine eigenen Artikel."
+
+# @ inform_about_content
+#: inc/class-Iac_Profile_Settings.php:119
+msgid "Comments subscription"
+msgstr "Kommentarabonnement"
+
+# @ inform_about_content
+#: inc/class-Iac_Profile_Settings.php:124
+msgid "Inform about new comments via e-mail, without your own comments."
+msgstr ""
+"Informiere dich über neue Kommentare via E-Mail, ohne deine eigenen "
+"Kommentare."
+
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:86
 msgid "Inform About Content Settings"
-msgstr "Einstellungen für »Inform about content«"
+msgstr "Information über Inhalte Einstellungen"
 
-#: inc/class-Iac_Settings.php:90
-#@ inform_about_content
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:93
 msgid "Hide E-Mail addresses to other recipients (BCC)"
-msgstr "Verberge E-Mailadressen vor anderen Empängern (Bcc)."
+msgstr "Verberge E-Mailadressen vor anderen Empängern (Bcc)"
 
-#. translators: plugin header field 'PluginURI'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "http://wordpress.org/extend/plugins/inform-about-content/"
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:106
+msgid "To: header for Bcc-option is set"
+msgstr "An: Header für BCC-Option ist aktiv "
+
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:115
+msgid ""
+"The eMail needs a to-header if all addresses are set as <code>bcc</code>. "
+"Leave empty to use the <code>admin_email</code> option."
 msgstr ""
+"Die E-Mail benötigt einen to-Header, wenn alle Addressen als <code>BCC</"
+"code> gesetzt sind.  Lasse das Feld leer um die <code>admin_email</code> "
+"Option zu nutzen."
 
-#. translators: plugin header field 'Description'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "Informs all users of a blog about a new post and approved comments via email"
-msgstr "Informiere alle Nutzer des Blogs über neue Artikel und freigegebene Kommentare via E-Mail."
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:121
+msgid "Attach media files to the notification email"
+msgstr "Mediendatein der E-Mail Mitteilung zuordnen"
 
-#. translators: plugin header field 'Author'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "Inpsyde GmbH"
-msgstr ""
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:221
+msgid "Note: Users must opt-in to e-mail notifications by default"
+msgstr "Hinweis: Im Standard bekommen Nutzer die E-Mail Mitteilung."
 
-#. translators: plugin header field 'Version'
-#: inform-about-content.php:0
-#@ inform_about_content
-msgid "0.0.5-RC1"
-msgstr ""
-
-#: inform-about-content.php:121
-#@ inform_about_content
-msgid "to:"
-msgstr ""
-
+# @ inform_about_content
+#: inc/class-Iac_Settings.php:222
+msgid "Note: Users must opt-out from e-mail notifications by default"
+msgstr "Hinweis: Nutzer müssen im Standard die E-Mail Mitteilung deaktivieren."

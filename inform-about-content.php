@@ -31,6 +31,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		add_filter( 'iac_post_message',    'strip_tags' );
 		add_filter( 'iac_comment_message', 'strip_tags' );
 
+		add_filter( 'iac_post_message',    array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
+		add_filter( 'iac_comment_message', array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
+
 		# since 0.0.6
 		add_filter( 'iac_post_message',    'strip_shortcodes' );
 		add_filter( 'iac_comment_message', 'strip_shortcodes' );
@@ -73,6 +76,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public $mail_string_by;
 
 		public $mail_string_url;
+
+		/**
+		 * saved transit posts
+		 *
+		 * @since 2013-07-17
+		 * @var array
+		 */
+		protected $transit_posts = array();
 
 		/**
 		 * plugin options
@@ -120,27 +131,41 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  void
 		 */
 		public function __construct() {
-			spl_autoload_register( array( __CLASS__, 'load_class' ) );
-
-			# change the default behaviour from outside
+			
+			// check for php 5.2
+			// @see  http://www.php.net/manual/en/spl.installation.php
+			if ( function_exists( 'spl_autoload_register' ) )
+				spl_autoload_register( array( __CLASS__, 'load_class' ) );
+			else
+				$this->load_class( NULL );
+			
+			// change the default behaviour from outside
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
-
+			
 			// set srings for mail
 			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
 			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
-
+			
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
+			$this->options[ 'static_options' ] = array(
+				'mail_string_to'             => $this->mail_string_to,
+				'mail_string_by'             => $this->mail_string_by,
+				'mail_string_url'            => $this->mail_string_url,
+				'mail_string_new_comment_to' => $this->mail_string_new_comment_to
+			);
 			#apply a hook to get the current settings
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
-
+			
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
-
-			if ( $this->inform_about_posts )
+			
+			if ( $this->inform_about_posts ) {
+				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
+			}
 			if ( $this->inform_about_comments )
 				add_action( 'wp_insert_comment', array( $this, 'inform_about_comment' ) );
 				// also possible is the hook comment_post
@@ -152,7 +177,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			Iac_Threaded_Mails::get_instance();
 			Iac_Attach_Media::get_instance();
 		}
-
+		
 		/**
 		 * Return Textdomain string
 		 *
@@ -278,8 +303,28 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
-		 * Send mail, if publish a new post
+		 * catch post status transition of each post
 		 *
+		 * @wp-hook transition_post_status
+		 * @since 2013.07.17
+		 * @param string $new_status
+		 * @param string $old_status
+		 * @param WP_Post $post
+		 * @return void
+		 */
+		public function save_transit_posts( $new_status, $old_status, $post ) {
+
+			$this->transit_posts[ $post->ID ] = array(
+				'old_status' => $old_status,
+				'new_status' => $new_status
+			);
+		}
+
+
+		/**
+		 * Send mail, if changes a status form not 'publish' to 'publish'
+		 *
+		 * @wp_hook publish_post
 		 * @access  public
 		 * @sinde   0.0.1
 		 * @used    get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
@@ -289,6 +334,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function inform_about_posts( $post_id = FALSE ) {
 
 			if ( $post_id ) {
+				if ( ! isset( $this->transit_posts[ $post_id ] ) )
+					return $post_id;
+
+				$transit = $this->transit_posts[ $post_id ];
+				if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] )
+					return $post_id;
+
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
@@ -303,18 +355,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
 
 				// message content
-				$message = array(
-					$post_data->post_content,
-					implode( ' ', array(
-						$this->mail_string_by,
-						get_the_author_meta( 'display_name', $user->ID )
-					) ),
-					implode( ': ', array(
-						$this->mail_string_url,
-						get_permalink( $post_id )
-					) )
-				);
-				$message = implode( PHP_EOL, $message );
+				$message = $post_data->post_content;
 
 				# create header data
 				$headers = array();
@@ -406,23 +447,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					// email subject
 					$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
 					// message content
-					$message = array(
-						#comment content
-						$comment_data->comment_content,
-						#author and title
-						implode( ' ', array(
-							$this->mail_string_by,
-							$commenter[ 'name' ],
-							$this->mail_string_to,
-							get_the_title( $post_data->ID ),
-						) ),
-						# the posts permalink
-						implode( ': ', array(
-							$this->mail_string_url,
-							get_permalink( $post_data->ID )
-						) )
-					);
-					$message = implode( PHP_EOL, $message );
+					$message = $comment_data->comment_content;
 
 					// create header data
 					$headers = array();
@@ -516,6 +541,76 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
+		 * add information about sender to the end of the
+		 * content
+		 *
+		 * @wp_hook iac_post_message
+		 * @wp_hook iac_comment_message
+		 * @since 2013-07-18
+		 * @param string $message
+		 * @param array $options
+		 * @param $id
+		 * @return string
+		 */
+		public static function sender_to_message( $message, $options, $id ) {
+
+			$author    = NULL;
+			$commenter = NULL;
+			$parts     = array();
+			if ( 'iac_post_message' == current_filter() ) {
+				$post = get_post( $id );
+				$author = get_userdata( $post->post_author );
+				if ( ! is_a( $author, 'WP_User' ) )
+					return $message;
+
+				$parts = array(
+					'', # linefeed
+					implode( ' ', array(
+						$options[ 'static_options' ][ 'mail_string_by' ],
+						$author->data->display_name
+					) ),
+					implode( ': ', array(
+						$options[ 'static_options' ][ 'mail_string_url' ],
+						get_permalink( $post )
+					) )
+				);
+			} elseif ( 'iac_comment_message' == current_filter() ) {
+				$comment   = get_comment( $id );
+				$post      = get_post( $comment->comment_post_ID );
+				$commenter = array(
+						'name'  => 'Annonymous'
+				);
+				if ( 0 != $comment->user_id ) {
+					$author  = get_userdata( $comment->user_id );
+					$commenter[ 'name' ] = $author->data->display_name;
+				} else {
+					if ( ! empty( $comment->comment_author ) )
+						$commenter[ 'name' ] = $comment->comment_author;
+				}
+				$parts = array(
+					'',
+					#author and title
+					implode( ' ', array(
+						$options[ 'static_options' ][ 'mail_string_by' ],
+						$commenter[ 'name' ],
+						$options[ 'static_options' ][ 'mail_string_to' ],
+						get_the_title( $post->ID ),
+					) ),
+					# the posts permalink
+					implode( ': ', array(
+						$options[ 'static_options' ][ 'mail_string_url' ],
+						get_permalink( $post )
+					) )
+				);
+			}
+
+			if ( ! empty( $parts ) )
+				$message .= implode( PHP_EOL, $parts );
+
+			return $message;
+		}
+
+		/**
 		 * getter for the current settings
 		 *
 		 * @since 0.0.5
@@ -526,10 +621,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if ( ! empty( $this->options ) )
 				return $this->options;
-
+			
 			return $default;
 		}
-
+		
 		/**
 		 * autoloader for the classes
 		 *
@@ -538,13 +633,20 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return void
 		 */
 		public static function load_class( $class_name ) {
-
-			$file_name = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
-
-			if ( file_exists( $file_name ) )
-				require_once $file_name;
+			// if spl_autoload_register not exist
+			if ( NULL === $class_name ) {
+				// load required classes
+				foreach( glob( dirname( __FILE__ ) . '/inc/*.php' ) as $path )
+					require_once $path;
+			} else {
+				// if param have a class string
+				$path = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
+				
+				if ( file_exists( $path ) )
+					require_once $path;
+			}
 		}
-
+		
 	} // end class Inform_About_Content
 
 } // end if class exists

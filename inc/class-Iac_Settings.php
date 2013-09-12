@@ -103,7 +103,7 @@ class Iac_Settings {
 
 		add_settings_field(
 			'bcc_to_recipient',
-			__( 'To: header for Bcc-option is set.', Inform_About_Content::TEXTDOMAIN ),
+			__( 'To: header for Bcc-option is set', Inform_About_Content::TEXTDOMAIN ),
 			array( $this, 'text' ),
 			$this->page,
 			$this->section,
