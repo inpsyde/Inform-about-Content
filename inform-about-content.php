@@ -332,15 +332,17 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  string $post_id
 		 */
 		public function inform_about_posts( $post_id = FALSE ) {
-
+			
 			if ( $post_id ) {
+				
 				if ( ! isset( $this->transit_posts[ $post_id ] ) )
 					return $post_id;
-
+				
 				$transit = $this->transit_posts[ $post_id ];
+				
 				if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] )
 					return $post_id;
-
+				
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
@@ -512,7 +514,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
-
+			
 			return wp_mail(
 				$to,
 				$subject,
