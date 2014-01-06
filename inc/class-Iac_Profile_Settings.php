@@ -19,7 +19,7 @@ class Iac_Profile_Settings {
 	 * @since 0.0.2
 	 * @return $classobj
 	 */
-	public function get_object() {
+	public static function get_object() {
 
 		if ( NULL === self :: $classobj ) {
 			self :: $classobj = new self;
