@@ -6,7 +6,7 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.6-master
+ * Version:     0.0.6-RC1
  * License:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
@@ -102,7 +102,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return FALSE
 		 */
 		public static function default_opt_in( $default_opt_in ) {
-
+			
 			return FALSE;
 		}
 
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @since 0.0.1
 		 * @return $classobj
 		 */
-		public function get_object() {
+		public static function get_object() {
 
 			if ( NULL === self :: $classobj ) {
 				self :: $classobj = new self;
@@ -185,7 +185,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @since   0.0.2
 		 * @return  string
 		 */
-		public function get_textdomain() {
+		public static function get_textdomain() {
 
 			return self::TEXTDOMAIN;
 		}
@@ -332,15 +332,17 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  string $post_id
 		 */
 		public function inform_about_posts( $post_id = FALSE ) {
-
+			
 			if ( $post_id ) {
+				
 				if ( ! isset( $this->transit_posts[ $post_id ] ) )
 					return $post_id;
-
+				
 				$transit = $this->transit_posts[ $post_id ];
+				
 				if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] )
 					return $post_id;
-
+				
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
@@ -512,7 +514,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
-
+			
 			return wp_mail(
 				$to,
 				$subject,
