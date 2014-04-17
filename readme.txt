@@ -2,7 +2,7 @@
 Contributors: inpsyde, Bueltge, dnaber-de, hughwillfayle
 Tags: mail, comment, post
 Requires at least: 3.0
-Tested up to: 3.7-alpha
+Tested up to: 3.9
 Stable tag: 0.0.5
 
 Informs all users of a blog about a new post and approved comments via email
@@ -20,7 +20,7 @@ Please give me feedback, contribute and file technical bugs on [GitHub Repo](htt
 
 == Installation ==
 = Requirements  =
-* WordPress version 3.0 and later (tested at 3.6-Beta2)
+* WordPress version 3.0 and later (see tested up to)
 * PHP 5.3; maybe 5.2, but untested
 
 = Installation =
