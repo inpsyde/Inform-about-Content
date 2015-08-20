@@ -2,7 +2,7 @@
 Contributors: inpsyde, Bueltge, dnaber-de, hughwillfayle
 Tags: mail, comment, post
 Requires at least: 3.0
-Tested up to: 4.0
+Tested up to: 4.3
 Stable tag: 0.0.5
 
 Informs all users of a blog about a new post and approved comments via email
