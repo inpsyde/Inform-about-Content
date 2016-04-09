@@ -170,10 +170,15 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			#Todo: remove the admin_init -> inform_about_comment  if its runnig!
 			add_action( 'admin_init', array( $this, 'inform_about_comment' ) );
 
+			#add_action( 'iac_schedule_send_postt_chunks', array( $this, 'schedule_send_next_post_group' ) );
+			#add_action( 'iac_schedule_send_comment_chunks', array( $this, 'schedule_send_next_comment_group' ) );
+
+
 			if ( $this->inform_about_posts ) {
 				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
 			}
+
 			if ( $this->inform_about_comments )
 				add_action( 'wp_insert_comment', array( $this, 'inform_about_comment' ) );
 				// also possible is the hook comment_post
@@ -228,34 +233,43 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function get_members( $current_user_email = NULL, $context = '' ) {
 
-			$meta_key      = $context . '_subscription';
-			$meta_value    = '0';
-			$meta_compare  = '!=';
-			$include_empty = TRUE;
+			if( array_key_exists( 'send_next_group', $this->options[ 'static_options' ] ) ){
 
-			if ( self::$default_opt_in ) {
-				$meta_value = '1';
-				$meta_compare = '=';
-				$include_empty = FALSE;
-			}
+				$user_addresses = $this->options[ 'static_options' ][ 'send_next_group' ];
 
-			$users = $this->get_users_by_meta(
-				$meta_key, $meta_value, $meta_compare, $include_empty
-			);
-			$user_addresses = array();
+			}else{
 
-			if ( ! is_array( $users ) || empty( $users ) )
-				return '';
+				$meta_key      = $context . '_subscription';
+				$meta_value    = '0';
+				$meta_compare  = '!=';
+				$include_empty = TRUE;
 
-			foreach ( $users as $user ) {
+				if ( self::$default_opt_in ) {
+					$meta_value = '1';
+					$meta_compare = '=';
+					$include_empty = FALSE;
+				}
 
-				if ( $current_user_email === $user->data->user_email )
-					continue;
+				$users = $this->get_users_by_meta(
+					$meta_key, $meta_value, $meta_compare, $include_empty
+				);
+				$user_addresses = array();
 
-				$user_addresses[] = $user->data->user_email;
+				if ( ! is_array( $users ) || empty( $users ) )
+					return '';
+
+				foreach ( $users as $user ) {
+
+					if ( $current_user_email === $user->data->user_email )
+						continue;
+
+					$user_addresses[] = $user->data->user_email;
+				}
+
 			}
 
 			return apply_filters( 'iac_get_members', $user_addresses );
+
 		}
 
 		/**
@@ -390,6 +404,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$attachments = apply_filters( 'iac_post_attachments', array(),  $this->options, $post_id );
 				$signature   = apply_filters( 'iac_post_signature',   '',       $this->options, $post_id );
 
+				$this->options[ 'static_options' ][ 'object' ] = [ 'id' => $post_id, 'type' => 'post' ];
+
 				$this->send_mail(
 					$to,
 					$subject,
@@ -415,9 +431,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function inform_about_comment( $comment_id = FALSE, $comment_status = FALSE ) {
 
-
-			#Todo remove this test $comment_id
-			$comment_id = 2;
+			#$comment_id = 2;
 
 			if ( $comment_id ) {
 
@@ -496,6 +510,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$attachments = apply_filters( 'iac_comment_attachments', array(),  $this->options, $comment_id );
 					$signature   = apply_filters( 'iac_comment_signature',   '',       $this->options, $comment_id );
 
+					$this->options[ 'static_options' ][ 'object' ] = [ 'id' => $comment_id, 'type' => 'comment' ];
+
 					$this->send_mail(
 						$to,
 						$subject,
@@ -516,6 +532,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * builds the header and sends mail
 		 *
 		 * @since 0.0.5 (2012.09.03)
+		 * @param int $object_id post or comment id
 		 * @param string $to
 		 * @param string $subject
 		 * @param string $message
@@ -527,7 +544,15 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
 
-				$to = $this->get_mail_to_chunk( $to );
+				$send_next_group = FALSE;
+
+				if( array_key_exists( 'send_next_group', $this->options[ 'static_options' ] ) ){
+
+					$send_next_group = $this->options[ 'static_options' ][ 'send_next_group' ];
+
+				}
+
+				$to = $this->get_mail_to_chunk( $to, $send_next_group );
 
 			}
 
@@ -547,9 +572,20 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
+		 * Modulate email adresses for sending,
+		 * register schedule event and convert adress array in cunks
 		 *
+		 * @since 0.0.7 (2016.04.09)
+		 *
+		 * @param            $to
+		 * @param bool|FALSE $mail_to_chunks
+		 *
+		 * @return string
 		 */
 		private function get_mail_to_chunk( $to, $mail_to_chunks = FALSE ){
+
+			$object_id      = $this->options[ 'static_options' ][ 'object' ][ 'id' ];
+			$object_type    = $this->options[ 'static_options' ][ 'object' ][ 'type' ];
 
 			if( empty( $mail_to_chunks ) ){
 
@@ -565,22 +601,57 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						$count = 0;
 					}
 
-					$mail_to_chunks[ $chunk ][] = $email_adress;
+					$mail_to_chunks[ $object_id ][ $chunk ][] = $email_adress;
 
 					$count++;
 				}
 
 			}
 
-			$to = implode( ',', $mail_to_chunks[0] );
+			$to = implode( ',', $mail_to_chunks[ $object_id ][0] );
 
-			unset( $mail_to_chunks[0] );
+			unset( $mail_to_chunks[ $object_id ][0] );
 
-			$mail_to_chunks = array_values( $mail_to_chunks );
+			$mail_to_chunks[ $object_id ] = array_values( $mail_to_chunks[ $object_id ] );
 
-			#wp_schedule_event( time() 'iac_send_chunk' );
-			print_r( [ $to, $mail_to_chunks ] );
+			wp_schedule_single_event( time() + 5000, 'iac_schedule_send_' . $object_type . '_chunks', $mail_to_chunks  );
+
+			print_r( $mail_to_chunks );
 			die();
+
+			#return $to;
+
+		}
+
+		private function schedule_send_next_post_group( $chunks ){
+
+			$this->modulate_next_group( 'post', $chunks );
+
+		}
+
+		private function schedule_send_next_comments_group( $chunks ){
+
+			$this->modulate_next_group( 'comments', $chunks );
+
+		}
+
+		private function modulate_next_group( $type, $chunks ){
+
+			foreach( $chunks as $id => $chunk ){
+
+				$this->options[ 'static_options' ][ 'send_next_group' ][ $type ] = $chunk;
+
+				if( $type == 'post' ){
+
+					$this->inform_about_posts( $id );
+
+				}elseif( $type == 'comments' ){
+
+					$this->inform_about_comment( $id );
+
+				}
+
+			}
 
 		}
 
