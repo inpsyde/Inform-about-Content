@@ -572,11 +572,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			}
 
-			print_r( $mail_to_chunks );
-			die();
+			$to = implode( ',', $mail_to_chunks[0] );
+
+			unset( $mail_to_chunks[0] );
+
+			$mail_to_chunks = array_values( $mail_to_chunks );
 
 			#wp_schedule_event( time() 'iac_send_chunk' );
-			print_r( $to );
+			print_r( [ $to, $mail_to_chunks ] );
 			die();
 
 		}
