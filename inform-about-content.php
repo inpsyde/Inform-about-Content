@@ -141,12 +141,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			
 			// change the default behaviour from outside
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
-			
+
 			// set srings for mail
 			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
 			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
+			$this->mail_to_chunksize          = apply_filters( 'iac_mail_to_chunksize', 10 );
 			
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
@@ -155,13 +156,18 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				'mail_string_to'             => $this->mail_string_to,
 				'mail_string_by'             => $this->mail_string_by,
 				'mail_string_url'            => $this->mail_string_url,
-				'mail_string_new_comment_to' => $this->mail_string_new_comment_to
+				'mail_string_new_comment_to' => $this->mail_string_new_comment_to,
+				'mail_to_chunking'           => apply_filters( 'iac_mail_to_chunking', TRUE ),
 			);
+
 			#apply a hook to get the current settings
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
 			
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
-			
+
+			#Todo: remove the admin_init -> inform_about_comment  if its runnig!
+			add_action( 'admin_init', array( $this, 'inform_about_comment' ) );
+
 			if ( $this->inform_about_posts ) {
 				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
@@ -247,7 +253,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$user_addresses[] = $user->data->user_email;
 			}
 
-			return implode( ', ', $user_addresses );
+			return apply_filters( 'iac_get_members', $user_addresses );
 		}
 
 		/**
@@ -332,7 +338,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  string $post_id
 		 */
 		public function inform_about_posts( $post_id = FALSE ) {
-			
+
 			if ( $post_id ) {
 				
 				if ( ! isset( $this->transit_posts[ $post_id ] ) )
@@ -374,6 +380,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						: $this->options[ 'bcc_to_recipient' ];
 					$headers[ 'Bcc' ] = $bcc;
 				}
+
 				$to          = apply_filters( 'iac_post_to',          $to,      $this->options, $post_id );
 				$subject     = apply_filters( 'iac_post_subject',     $subject, $this->options, $post_id );
 				$message     = apply_filters( 'iac_post_message',     $message, $this->options, $post_id );
@@ -405,6 +412,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  string $comment_id
 		 */
 		public function inform_about_comment( $comment_id = FALSE, $comment_status = FALSE ) {
+
+
+			#Todo remove this test $comment_id
+			#$comment_id = 2;
 
 			if ( $comment_id ) {
 				// get data from current comment
