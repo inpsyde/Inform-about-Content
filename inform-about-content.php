@@ -421,11 +421,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if ( $comment_id ) {
 
-				if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
-
-					$this->registter_schedule_event();
-				}
-
 				// get data from current comment
 				$comment_data = get_comment( $comment_id );
 				// if comment status is approved
@@ -515,6 +510,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			return $comment_id;
 		}
 
+
+
 		/**
 		 * builds the header and sends mail
 		 *
@@ -527,6 +524,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  bool
 		 */
 		public function send_mail( $to, $subject = '', $message = '', $headers = array(), $attachments = array() ) {
+
+			if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
+
+				$to = $this->get_mail_to_chunk( $to );
+
+			}
 
 			foreach ( $headers as $k => $v ) {
 
@@ -541,6 +544,41 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$headers,
 				$attachments
 			);
+		}
+
+		/**
+		 *
+		 */
+		private function get_mail_to_chunk( $to, $mail_to_chunks = FALSE ){
+
+			if( empty( $mail_to_chunks ) ){
+
+				$count = 0;
+				$chunk = 0;
+
+				$chunk_size = $this->options['static_options']['mail_to_chunking']['chunksize'];
+
+				foreach( $to as $email_adress ){
+
+					if( $count > $chunk_size ){
+						$chunk++;
+						$count = 0;
+					}
+
+					$mail_to_chunks[ $chunk ][] = $email_adress;
+
+					$count++;
+				}
+
+			}
+
+			print_r( $mail_to_chunks );
+			die();
+
+			#wp_schedule_event( time() 'iac_send_chunk' );
+			print_r( $to );
+			die();
+
 		}
 
 		/**
@@ -666,13 +704,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				if ( file_exists( $path ) )
 					require_once $path;
 			}
-		}
-
-		private function registter_schedule_event(){
-
-			print_r( 'run_schedule_event' );
-			die();
-
 		}
 		
 	} // end class Inform_About_Content
