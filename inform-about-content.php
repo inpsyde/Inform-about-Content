@@ -147,7 +147,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
-			$this->mail_to_chunksize          = apply_filters( 'iac_mail_to_chunksize', 10 );
 			
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
@@ -157,7 +156,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				'mail_string_by'             => $this->mail_string_by,
 				'mail_string_url'            => $this->mail_string_url,
 				'mail_string_new_comment_to' => $this->mail_string_new_comment_to,
-				'mail_to_chunking'           => apply_filters( 'iac_mail_to_chunking', TRUE ),
+				'mail_to_chunking'           => array(
+													'chunking'  => apply_filters( 'iac_mail_to_chunking', TRUE ),
+													'chunksize' => apply_filters( 'iac_mail_to_chunksize', 10 )
+												)
 			);
 
 			#apply a hook to get the current settings
@@ -415,9 +417,15 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 
 			#Todo remove this test $comment_id
-			#$comment_id = 2;
+			$comment_id = 2;
 
 			if ( $comment_id ) {
+
+				if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
+
+					$this->registter_schedule_event();
+				}
+
 				// get data from current comment
 				$comment_data = get_comment( $comment_id );
 				// if comment status is approved
@@ -658,6 +666,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				if ( file_exists( $path ) )
 					require_once $path;
 			}
+		}
+
+		private function registter_schedule_event(){
+
+			print_r( 'run_schedule_event' );
+			die();
+
 		}
 		
 	} // end class Inform_About_Content
