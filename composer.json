@@ -34,7 +34,7 @@
     "issues": "https://github.com/inpsyde/Inform-about-Content/issues"
   },
   "require": {
-    "php": ">=5.3",git
+    "php": ">=5.3",
     "composer/installers": "~1.0"
   },
   "require-dev": {
