@@ -167,12 +167,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
-			#Todo: remove the admin_init -> inform_about_comment  if its runnig!
-			add_action( 'admin_init', array( $this, 'inform_about_comment' ) );
-
-			#add_action( 'iac_schedule_send_postt_chunks', array( $this, 'schedule_send_next_post_group' ) );
-			#add_action( 'iac_schedule_send_comment_chunks', array( $this, 'schedule_send_next_comment_group' ) );
-
+			add_action( 'iac_schedule_send_postt_chunks', array( $this, 'schedule_send_next_post_group' ) );
+			add_action( 'iac_schedule_send_comment_chunks', array( $this, 'schedule_send_next_comment_group' ) );
 
 			if ( $this->inform_about_posts ) {
 				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
@@ -431,8 +427,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function inform_about_comment( $comment_id = FALSE, $comment_status = FALSE ) {
 
-			#$comment_id = 2;
-
 			if ( $comment_id ) {
 
 				// get data from current comment
@@ -471,6 +465,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 					// email addresses
 					$to = $this->get_members( $commenter[ 'email' ], 'comment' );
+
 					if ( empty( $to ) )
 						return $comment_id;
 
@@ -532,6 +527,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * builds the header and sends mail
 		 *
 		 * @since 0.0.5 (2012.09.03)
+		 *
 		 * @param int $object_id post or comment id
 		 * @param string $to
 		 * @param string $subject
@@ -616,22 +612,19 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			wp_schedule_single_event( time() + 5000, 'iac_schedule_send_' . $object_type . '_chunks', $mail_to_chunks  );
 
-			print_r( $mail_to_chunks );
-			die();
-
-			#return $to;
+			return $to;
 
 		}
 
-		private function schedule_send_next_post_group( $chunks ){
+		public function schedule_send_next_post_group( $chunks ){
 
-			$this->modulate_next_group( 'post', $chunks );
+			$this->modulate_next_group( 'post', json_decode( $chunks ) );
 
 		}
 
-		private function schedule_send_next_comments_group( $chunks ){
+		public function schedule_send_next_comment_group( $chunks ){
 
-			$this->modulate_next_group( 'comments', $chunks );
+			$this->modulate_next_group( 'comments', json_decode( $chunks ) );
 
 		}
 
@@ -639,7 +632,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			foreach( $chunks as $id => $chunk ){
 
-				$this->options[ 'static_options' ][ 'send_next_group' ][ $type ] = $chunk;
+				$this->options[ 'static_options' ][ 'send_next_group' ][ $id ] = $chunk;
 
 				if( $type == 'post' ){
 
