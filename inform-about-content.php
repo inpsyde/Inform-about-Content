@@ -616,18 +616,28 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		}
 
+		/**
+		 * @param json|string $chunks
+		 */
 		public function schedule_send_next_post_group( $chunks ){
 
 			$this->modulate_next_group( 'post', json_decode( $chunks ) );
 
 		}
 
+		/**
+		 * @param json|string $chunks
+		 */
 		public function schedule_send_next_comment_group( $chunks ){
 
 			$this->modulate_next_group( 'comments', json_decode( $chunks ) );
 
 		}
 
+		/**
+		 * @param string $type means posttype post or comment
+		 * @param array $chunks
+		 */
 		private function modulate_next_group( $type, $chunks ){
 
 			foreach( $chunks as $id => $chunk ){
