@@ -788,12 +788,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
-		 * Attempt to download a remote file attachment
+		 * log easy a msg
 		 *
-		 * @param string $url  URL of item to fetch
-		 * @param array  $post Attachment details
+		 * @param int $line  the linenumer
+		 * @param mixed  $log_content
 		 *
-		 * @return array|WP_Error Local file location details on success, WP_Error otherwise
+		 * @return void
 		 */
 		private function logger( $line, $log_content = FALSE ) {
 
