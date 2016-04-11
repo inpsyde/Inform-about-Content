@@ -167,6 +167,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
+			#log settings
+			add_filter( 'logfile_path', function(){ return __DIR__ . '/log/'; } );
+			add_filter( 'logfile_name', function(){ return 'app.log'; } );
+
 			add_action( 'iac_schedule_send_postt_chunks', array( $this, 'schedule_send_next_post_group' ) );
 			add_action( 'iac_schedule_send_comment_chunks', array( $this, 'schedule_send_next_comment_group' ) );
 
@@ -782,7 +786,38 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					require_once $path;
 			}
 		}
-		
+
+		/**
+		 * Attempt to download a remote file attachment
+		 *
+		 * @param string $url  URL of item to fetch
+		 * @param array  $post Attachment details
+		 *
+		 * @return array|WP_Error Local file location details on success, WP_Error otherwise
+		 */
+		private function logger( $line, $log_content = FALSE ) {
+
+			if ( $log_content != FALSE ) {
+
+				date_default_timezone_set( 'UTC' );
+
+				// $filename should be the path to a file in the upload directory.
+				$kw = date('W', time());
+
+				$log_path = apply_filters( 'logfile_path', WP_CONTENT_DIR . '/uploads/logs/' . $kw . '/' );
+				$log_file = $log_path . apply_filters( 'logfile_name', date('Y-d-m', time()) . '.log' );
+
+				if ( ! file_exists( $log_path ) ) {
+					mkdir( $log_path, 0777, TRUE );
+				}
+
+				#$file     = file_get_contents( $log_file );
+				$response = date( '[d-m-Y H:i ', time() ) . '- LINE ' . $line . '] ~ $ ' . $log_content . "\n";
+				file_put_contents( $log_file, $response, FILE_APPEND | LOCK_EX );
+
+			}
+		}
+
 	} // end class Inform_About_Content
 
 } // end if class exists
