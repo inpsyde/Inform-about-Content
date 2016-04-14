@@ -1,5 +1,9 @@
 # Informer
 
+_– A licky boom, bomm down_
+
+<hr />
+
 Informs all users of a blog about a new post and approved comments via email
 
 ## Description
