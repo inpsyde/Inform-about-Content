@@ -1,8 +1,10 @@
 # Informer
 
-_– A licky boom, bomm down_
+_– A licky boom, boom down_
 
-<hr />
+[![Video Informer on YouTube](https://i.ytimg.com/vi/kqCI6QGVHIk/mqdefault.jpg)](https://www.youtube.com/watch?v=kqCI6QGVHIk)
+
+---
 
 Informs all users of a blog about a new post and approved comments via email
 
