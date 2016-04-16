@@ -60,7 +60,6 @@ Getting the current user settings is also easy:
 $user_settings = apply_filters( 'iac_get_user_settings', array(), $user_id );
 ```
 
-
 ## Other Notes
 ### Bugs, technical hints or contribute
 Please give us feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
@@ -68,7 +67,7 @@ Please give us feedback, contribute and file technical bugs on [GitHub Repo](htt
 ### Authors, Contributors
 [Contributors Stats](https://github.com/bueltge/Inform-about-Content/graphs/contributors)
 
-### Licence
+### License
 Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog.
 
 ## Changelog
