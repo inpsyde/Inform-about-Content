@@ -568,7 +568,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @since 0.0.5 (2012.09.03)
 		 *
-		 * @param int $object_id post or comment id
 		 * @param array $to
 		 * @param string $subject
 		 * @param string $message
