@@ -628,18 +628,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 				$count = 0;
 				$chunk = 0;
-
 				$chunk_size = $this->options['static_options']['mail_to_chunking']['chunksize'];
 
 				foreach( $to as $email_address ){
-
 					if( $count > $chunk_size ){
 						$chunk++;
 						$count = 0;
 					}
-
 					$mail_to_chunks[ $chunk ][] = $email_address;
-
 					$count++;
 				}
 
@@ -651,19 +647,26 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			$mail_to_chunks = array_values( $mail_to_chunks );
 
-			wp_schedule_single_event( time() + $this->options['static_options']['schedule_interval'], 'iac_schedule_send_chunks', array( $object_id, $object_type, $mail_to_chunks )  );
+			wp_schedule_single_event(
+				time() + $this->options['static_options']['schedule_interval'],
+				'iac_schedule_send_chunks',
+				array( $object_id, $object_type, $mail_to_chunks )
+			);
 
 			return $to;
 
 		}
 
 		/**
+		 * Cron callback
+		 *
+		 * @wp-hook iac_schedule_send_chunks
+		 *
 		 * @param json|string $chunks
 		 */
 		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
 
 			$this->modulate_next_group( $object_id, $object_type, $mail_to_chunks );
-
 		}
 
 		/**
