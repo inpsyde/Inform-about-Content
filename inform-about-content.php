@@ -6,7 +6,7 @@
  * Domain Path: /languages
  * Description: Informs all users of a blog about a new post and approved comments via email
  * Author:      Inpsyde GmbH
- * Version:     0.0.6-RC1
+ * Version:     0.0.7
  * License:     GPLv3
  * Author URI:  http://inpsyde.com/
  */
@@ -14,7 +14,7 @@
 /**
  * Informs all users of a blog about a new post and approved comments via email
  *
- * @author   fb, dn
+ * @author   fb, dn, rr
  * @since    0.0.1
  * @version  05/02/2013
  */
@@ -37,6 +37,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		# since 0.0.6
 		add_filter( 'iac_post_message',    'strip_shortcodes' );
 		add_filter( 'iac_comment_message', 'strip_shortcodes' );
+
+		# since 0.0.7
+		#add_filter( 'iac_single_email_address', 'mask_address' );
+		#add_filter( 'iac_email_address_chunk', 'add_test_emailaddress' );
 	}
 
 	class Inform_About_Content {
@@ -102,7 +106,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return FALSE
 		 */
 		public static function default_opt_in( $default_opt_in ) {
-			
+
 			return FALSE;
 		}
 
@@ -131,53 +135,69 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  void
 		 */
 		public function __construct() {
-			
+
 			// check for php 5.2
 			// @see  http://www.php.net/manual/en/spl.installation.php
 			if ( function_exists( 'spl_autoload_register' ) )
 				spl_autoload_register( array( __CLASS__, 'load_class' ) );
 			else
 				$this->load_class( NULL );
-			
+
 			// change the default behaviour from outside
-			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
-			
+			self::$default_opt_in = apply_filters( 'iac_default_opt_in', TRUE );
+
 			// set srings for mail
 			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
 			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
-			
+
 			$Iac_Profile_Settings = Iac_Profile_Settings :: get_object();
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
 			$this->options[ 'static_options' ] = array(
+				'schedule_interval'          => apply_filters( 'iac_schedule_interval', 10 ),
 				'mail_string_to'             => $this->mail_string_to,
 				'mail_string_by'             => $this->mail_string_by,
 				'mail_string_url'            => $this->mail_string_url,
-				'mail_string_new_comment_to' => $this->mail_string_new_comment_to
+				'mail_string_new_comment_to' => $this->mail_string_new_comment_to,
+				'mail_to_chunking'           => array(
+					'chunking'  => apply_filters( 'iac_mail_to_chunking', TRUE ),
+					'chunksize' => apply_filters( 'iac_mail_to_chunksize', 10 )
+				)
 			);
+
 			#apply a hook to get the current settings
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
-			
+
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
-			
+
+			#log settings
+			add_filter( 'logfile_path', function(){ return __DIR__ . '/log/'; } );
+			add_filter( 'logfile_name', function(){ return 'app.log'; } );
+
+			# add cron actions
+			add_action( 'iac_schedule_send_chunks', array( $this, 'schedule_send_next_group' ), 10, 3 );
+
 			if ( $this->inform_about_posts ) {
 				add_action( 'transition_post_status', array( $this, 'save_transit_posts' ), 10, 3 );
 				add_action( 'publish_post', array( $this, 'inform_about_posts' ) );
 			}
+
 			if ( $this->inform_about_comments )
 				add_action( 'wp_insert_comment', array( $this, 'inform_about_comment' ) );
-				// also possible is the hook comment_post
-			
+			// also possible is the hook comment_post
+
 			// Disable the default core notification (filter ignores __return_false)
 			add_filter( 'pre_option_comments_notify', '__return_zero' );
-			
+
 			// load additional features
 			Iac_Threaded_Mails::get_instance();
 			Iac_Attach_Media::get_instance();
+
+
 		}
-		
+
 		/**
 		 * Return Textdomain string
 		 *
@@ -220,34 +240,44 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function get_members( $current_user_email = NULL, $context = '' ) {
 
-			$meta_key      = $context . '_subscription';
-			$meta_value    = '0';
-			$meta_compare  = '!=';
-			$include_empty = TRUE;
+			if( array_key_exists( 'send_next_group', $this->options[ 'static_options' ] ) ){
 
-			if ( self::$default_opt_in ) {
-				$meta_value = '1';
-				$meta_compare = '=';
-				$include_empty = FALSE;
+				$user_addresses = $this->options[ 'static_options' ][ 'send_next_group' ];
+
+			}else{
+
+				$meta_key      = $context . '_subscription';
+				$meta_value    = '0';
+				$meta_compare  = '!=';
+				$include_empty = TRUE;
+
+				if ( self::$default_opt_in === FALSE &&  self::$default_opt_in) {
+					$meta_value = '1';
+					$meta_compare = '=';
+					$include_empty = FALSE;
+				}
+
+				$users = $this->get_users_by_meta(
+					$meta_key, $meta_value, $meta_compare, $include_empty
+				);
+
+				$user_addresses = array();
+
+				if ( ! is_array( $users ) || empty( $users ) )
+					return '';
+
+				foreach ( $users as $user ) {
+
+					if ( $current_user_email === $user->data->user_email )
+						continue;
+
+					$user_addresses[] = apply_filters( 'iac_single_email_address', $user->data->user_email );
+				}
+
 			}
 
-			$users = $this->get_users_by_meta(
-				$meta_key, $meta_value, $meta_compare, $include_empty
-			);
-			$user_addresses = array();
+			return apply_filters( 'iac_get_members', $user_addresses );
 
-			if ( ! is_array( $users ) || empty( $users ) )
-				return '';
-
-			foreach ( $users as $user ) {
-
-				if ( $current_user_email === $user->data->user_email )
-					continue;
-
-				$user_addresses[] = $user->data->user_email;
-			}
-
-			return implode( ', ', $user_addresses );
 		}
 
 		/**
@@ -332,17 +362,17 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @return  string $post_id
 		 */
 		public function inform_about_posts( $post_id = FALSE ) {
-			
+
 			if ( $post_id ) {
-				
+
 				if ( ! isset( $this->transit_posts[ $post_id ] ) )
 					return $post_id;
-				
+
 				$transit = $this->transit_posts[ $post_id ];
-				
+
 				if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] )
 					return $post_id;
-				
+
 				// get data from current post
 				$post_data = get_post( $post_id );
 				// get mail from author
@@ -374,12 +404,15 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 						: $this->options[ 'bcc_to_recipient' ];
 					$headers[ 'Bcc' ] = $bcc;
 				}
+
 				$to          = apply_filters( 'iac_post_to',          $to,      $this->options, $post_id );
 				$subject     = apply_filters( 'iac_post_subject',     $subject, $this->options, $post_id );
 				$message     = apply_filters( 'iac_post_message',     $message, $this->options, $post_id );
 				$headers     = apply_filters( 'iac_post_headers',     $headers, $this->options, $post_id );
 				$attachments = apply_filters( 'iac_post_attachments', array(),  $this->options, $post_id );
 				$signature   = apply_filters( 'iac_post_signature',   '',       $this->options, $post_id );
+
+				$this->options[ 'static_options' ][ 'object' ] = array( 'id' => $post_id, 'type' => 'post' );
 
 				$this->send_mail(
 					$to,
@@ -407,6 +440,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function inform_about_comment( $comment_id = FALSE, $comment_status = FALSE ) {
 
 			if ( $comment_id ) {
+
 				// get data from current comment
 				$comment_data = get_comment( $comment_id );
 				// if comment status is approved
@@ -443,6 +477,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 					// email addresses
 					$to = $this->get_members( $commenter[ 'email' ], 'comment' );
+
 					if ( empty( $to ) )
 						return $comment_id;
 
@@ -482,6 +517,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					$attachments = apply_filters( 'iac_comment_attachments', array(),  $this->options, $comment_id );
 					$signature   = apply_filters( 'iac_comment_signature',   '',       $this->options, $comment_id );
 
+					$this->options[ 'static_options' ][ 'object' ] = array( 'id' => $comment_id, 'type' => 'comment' );
+
 					$this->send_mail(
 						$to,
 						$subject,
@@ -496,11 +533,15 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			return $comment_id;
 		}
 
+
+
 		/**
 		 * builds the header and sends mail
 		 *
 		 * @since 0.0.5 (2012.09.03)
-		 * @param string $to
+		 *
+		 * @param int $object_id post or comment id
+		 * @param array $to
 		 * @param string $subject
 		 * @param string $message
 		 * @param  array $headers
@@ -509,12 +550,34 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function send_mail( $to, $subject = '', $message = '', $headers = array(), $attachments = array() ) {
 
+			if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
+
+				$send_next_group = FALSE;
+
+				if( array_key_exists( 'send_next_group', $this->options[ 'static_options' ] ) ){
+
+					$object_id = $this->options[ 'static_options' ][ 'object' ]['id'];
+					$send_next_group = $this->options[ 'static_options' ][ 'send_next_group' ][$object_id];
+
+				}
+
+
+				if ( $this->options[ 'send_by_bcc' ] ) {
+					$headers['Bcc'] = $this->get_mail_to_chunk( $headers['Bcc'], $send_next_group );
+				}else{
+					$to = $this->get_mail_to_chunk( $to, $send_next_group );
+				}
+
+			}
+
+
+
 			foreach ( $headers as $k => $v ) {
 
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
-			
+
 			return wp_mail(
 				$to,
 				$subject,
@@ -522,6 +585,92 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$headers,
 				$attachments
 			);
+		}
+
+		/**
+		 * Modulate email adresses for sending,
+		 * register schedule event and convert adress array in cunks
+		 *
+		 * @since 0.0.7 (2016.04.09)
+		 *
+		 * @param array $to
+		 * @param bool|FALSE $mail_to_chunks
+		 *
+		 * @return string
+		 */
+		private function get_mail_to_chunk( $to, $mail_to_chunks = FALSE ){
+
+			$object_id      = $this->options[ 'static_options' ][ 'object' ][ 'id' ];
+			$object_type    = $this->options[ 'static_options' ][ 'object' ][ 'type' ];
+
+			if( empty( $mail_to_chunks ) ){
+
+				$count = 0;
+				$chunk = 0;
+
+				$chunk_size = $this->options['static_options']['mail_to_chunking']['chunksize'];
+
+				foreach( $to as $email_address ){
+
+					if( $count > $chunk_size ){
+						$chunk++;
+						$count = 0;
+					}
+
+					$mail_to_chunks[ $chunk ][] = $email_address;
+
+					$count++;
+				}
+
+			}
+
+			$to = implode( ',', apply_filters( 'iac_email_address_chunk', $mail_to_chunks[0] ) );
+
+			unset( $mail_to_chunks[0] );
+
+			$mail_to_chunks = array_values( $mail_to_chunks );
+
+			wp_schedule_single_event( time() + $this->options['static_options']['schedule_interval'], 'iac_schedule_send_chunks', array( $object_id, $object_type, $mail_to_chunks )  );
+
+			return $to;
+
+		}
+
+		/**
+		 * @param json|string $chunks
+		 */
+		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
+
+			$this->modulate_next_group( $object_id, $object_type, $mail_to_chunks );
+
+		}
+
+		/**
+		 * @param string $type means posttype post or comment
+		 * @param array $chunks
+		 */
+		private function modulate_next_group( $object_id, $object_type, $mail_to_chunks  ){
+
+			if( ! empty( $mail_to_chunks ) ){
+
+				$this->options[ 'static_options' ][ 'send_next_group' ][ $object_id ] = $mail_to_chunks;
+
+				if( $object_type == 'post' ){
+
+					$this->inform_about_posts( $object_id );
+
+				}elseif( $object_type == 'comment' ){
+
+					$this->inform_about_comment( $object_id );
+
+				}
+
+			}else{
+
+				//logg error
+
+			}
+
 		}
 
 		/**
@@ -580,7 +729,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$comment   = get_comment( $id );
 				$post      = get_post( $comment->comment_post_ID );
 				$commenter = array(
-						'name'  => 'Annonymous'
+					'name'  => 'Annonymous'
 				);
 				if ( 0 != $comment->user_id ) {
 					$author  = get_userdata( $comment->user_id );
@@ -623,10 +772,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if ( ! empty( $this->options ) )
 				return $this->options;
-			
+
 			return $default;
 		}
-		
+
 		/**
 		 * autoloader for the classes
 		 *
@@ -643,12 +792,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			} else {
 				// if param have a class string
 				$path = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
-				
+
 				if ( file_exists( $path ) )
 					require_once $path;
 			}
 		}
-		
+
 	} // end class Inform_About_Content
 
 } // end if class exists
