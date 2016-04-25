@@ -20,28 +20,25 @@
  */
 
 if ( ! class_exists( 'Inform_About_Content' ) ) {
-	// add plugin to WP
-	if ( function_exists( 'add_action' ) ) {
 
-		# set the default behaviour
-		add_filter( 'iac_default_opt_in', array( 'Inform_About_Content', 'default_opt_in' ) );
-		add_action( 'plugins_loaded' ,    array( 'Inform_About_Content', 'get_object' ) );
+	# set the default behaviour
+	add_filter( 'iac_default_opt_in', array( 'Inform_About_Content', 'default_opt_in' ) );
+	add_action( 'plugins_loaded' ,    array( 'Inform_About_Content', 'get_object' ) );
 
-		# some default filters
-		add_filter( 'iac_post_message',    'strip_tags' );
-		add_filter( 'iac_comment_message', 'strip_tags' );
+	# some default filters
+	add_filter( 'iac_post_message',    'strip_tags' );
+	add_filter( 'iac_comment_message', 'strip_tags' );
 
-		add_filter( 'iac_post_message',    array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
-		add_filter( 'iac_comment_message', array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
+	add_filter( 'iac_post_message',    array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
+	add_filter( 'iac_comment_message', array( 'Inform_About_Content', 'sender_to_message' ), 10, 3 );
 
-		# since 0.0.6
-		add_filter( 'iac_post_message',    'strip_shortcodes' );
-		add_filter( 'iac_comment_message', 'strip_shortcodes' );
+	# since 0.0.6
+	add_filter( 'iac_post_message',    'strip_shortcodes' );
+	add_filter( 'iac_comment_message', 'strip_shortcodes' );
 
-		# since 0.0.7
-		#add_filter( 'iac_single_email_address', 'mask_address' );
-		#add_filter( 'iac_email_address_chunk', 'add_test_emailaddress' );
-	}
+	# since 0.0.7
+	#add_filter( 'iac_single_email_address', 'mask_address' );
+	#add_filter( 'iac_email_address_chunk', 'add_test_emailaddress' );
 
 	class Inform_About_Content {
 
