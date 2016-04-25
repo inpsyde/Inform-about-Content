@@ -609,8 +609,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
-		 * Modulate email adresses for sending,
-		 * register schedule event and convert adress array in cunks
+		 * Modulate email addresses for sending,
+		 * register schedule event and convert address array in chunks
 		 *
 		 * @since 0.0.7 (2016.04.09)
 		 *
