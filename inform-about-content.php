@@ -257,7 +257,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @used   get_users
 		 * @param  string $current_user_email email of user
 		 * @param  string $context should be 'comment' or 'post'
-		 * @return array string $users
+		 * @return array $users
 		 */
 		public function get_members( $current_user_email = NULL, $context = '' ) {
 
@@ -285,7 +285,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$user_addresses = array();
 
 				if ( ! is_array( $users ) || empty( $users ) )
-					return '';
+					return array();
 
 				foreach ( $users as $user ) {
 
@@ -297,6 +297,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			}
 
+			/**
+			 * Filter the list of user email adresses
+			 *
+			 * @param array $user_addresses
+			 *
+			 * @return array
+			 */
 			return apply_filters( 'iac_get_members', $user_addresses );
 
 		}
