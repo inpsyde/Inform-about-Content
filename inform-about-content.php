@@ -153,18 +153,44 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$settings = new Iac_Settings();
 			$this->options = $settings->options;
 			$this->options[ 'static_options' ] = array(
-				'schedule_interval'          => apply_filters( 'iac_schedule_interval', 10 ),
+				/**
+				 * Filter the time interval for the enqueued mails
+				 *
+				 * @param int $default_interval
+				 *
+				 * @return int
+				 */
+				'schedule_interval'          => (int) apply_filters( 'iac_schedule_interval', 10 ),
 				'mail_string_to'             => $this->mail_string_to,
 				'mail_string_by'             => $this->mail_string_by,
 				'mail_string_url'            => $this->mail_string_url,
 				'mail_string_new_comment_to' => $this->mail_string_new_comment_to,
 				'mail_to_chunking'           => array(
-					'chunking'  => apply_filters( 'iac_mail_to_chunking', TRUE ),
-					'chunksize' => apply_filters( 'iac_mail_to_chunksize', 10 )
+					/**
+					 * Should mails sends by queue in chunks
+					 *
+					 * @param bool $send_in_chunks
+					 *
+					 * @return bool
+					 */
+					'chunking' => (bool) apply_filters( 'iac_mail_to_chunking', TRUE ),
+					/**
+					 * How many mails should be sent at once
+					 *
+					 * @param int $mails_per_chunk
+					 *
+					 * @return int
+					 */
+					'chunksize' => (int) apply_filters( 'iac_mail_to_chunksize', 10 )
 				)
 			);
 
-			#apply a hook to get the current settings
+			/**
+			 * Apply a hook to get the current settings.
+			 * To get the options use
+			 *
+			 * $iac_options = apply_filters( 'iac_get_options', [] );
+			 */
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
