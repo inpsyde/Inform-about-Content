@@ -75,6 +75,15 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
+= 0.0.7-rc1 =
+* Implement Send Mail chunking.
+* add new Filter Hooks
+    * iac_get_members
+    * iac_single_email_address
+    * iac_email_address_chunk
+    * iac_mail_to_chunking
+    * iac_mail_to_chunksize
+
 = 0.0.6 =
 * Change Hook for send only on published posts
 * Change Mail-header for use in all systems
