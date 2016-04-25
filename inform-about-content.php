@@ -217,8 +217,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			// load additional features
 			Iac_Threaded_Mails::get_instance();
 			Iac_Attach_Media::get_instance();
-
-
 		}
 
 		/**
@@ -274,7 +272,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$meta_compare  = '!=';
 				$include_empty = TRUE;
 
-				if ( self::$default_opt_in === FALSE &&  self::$default_opt_in) {
+				if ( self::$default_opt_in ) {
 					$meta_value = '1';
 					$meta_compare = '=';
 					$include_empty = FALSE;
