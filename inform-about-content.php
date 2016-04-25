@@ -321,7 +321,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		public function get_users_by_meta( $meta_key, $meta_value = '', $meta_compare = '', $include_empty = FALSE ) {
 
 			if ( $include_empty ) {
-				#get all with the opposit value
+				#get all with the opposite value
 				if ( in_array( $meta_compare, array( '<>', '!=' ) ) )
 					$meta_compare = '=';
 				else
