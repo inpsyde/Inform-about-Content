@@ -156,11 +156,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				/**
 				 * Filter the time interval for the enqueued mails
 				 *
-				 * @param int $default_interval
+				 * @param int $default_interval in seconds
 				 *
 				 * @return int
 				 */
-				'schedule_interval'          => (int) apply_filters( 'iac_schedule_interval', 10 ),
+				'schedule_interval'          => (int) apply_filters( 'iac_schedule_interval', 5 * 60 ),
 				'mail_string_to'             => $this->mail_string_to,
 				'mail_string_by'             => $this->mail_string_by,
 				'mail_string_url'            => $this->mail_string_url,
