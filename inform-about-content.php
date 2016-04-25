@@ -141,7 +141,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 				$this->load_class( NULL );
 
 			// change the default behaviour from outside
-			self::$default_opt_in = apply_filters( 'iac_default_opt_in', TRUE );
+			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
 
 			// set srings for mail
 			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
