@@ -585,22 +585,16 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 					$object_id = $this->options[ 'static_options' ][ 'object' ]['id'];
 					$send_next_group = $this->options[ 'static_options' ][ 'send_next_group' ][$object_id];
-
 				}
-
 
 				if ( $this->options[ 'send_by_bcc' ] ) {
 					$headers['Bcc'] = $this->get_mail_to_chunk( $headers['Bcc'], $send_next_group );
 				}else{
 					$to = $this->get_mail_to_chunk( $to, $send_next_group );
 				}
-
 			}
 
-
-
 			foreach ( $headers as $k => $v ) {
-
 				$headers[] = $k . ': ' . $v;
 				unset( $headers[ $k ] );
 			}
