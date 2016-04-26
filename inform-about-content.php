@@ -679,7 +679,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @param string $object_type expects the posttype like post or comment
 		 * @param array $mail_to_chunks
 		 *
-		 * * @return void
+		 * @return void
 		 */
 		private function modulate_next_group( $object_id, $object_type, $mail_to_chunks  ){
 
