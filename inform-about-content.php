@@ -129,7 +129,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @access  public
 		 * @since   0.0.1
 		 * @uses    add_action
-		 * @return  void
 		 */
 		public function __construct() {
 
@@ -143,7 +142,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			// change the default behaviour from outside
 			self::$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
 
-			// set srings for mail
+			// set strings for mail
 			$this->mail_string_new_comment_to = __( 'new comment to', $this->get_textdomain() );
 			$this->mail_string_to             = __( 'to:', $this->get_textdomain() );
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
