@@ -658,9 +658,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @wp-hook iac_schedule_send_chunks
 		 *
-		 * @param $object_id
-		 * @param $object_type
-		 * @param $mail_to_chunks
+		 * @param int $object_id
+		 * @param string $object_type
+		 * @param array $mail_to_chunks
 		 */
 		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
 
