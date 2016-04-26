@@ -656,6 +656,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		/**
 		 * Cron callback for schedule event
 		 *
+		 * @since 0.0.7 (2016.04.09)
 		 * @wp-hook iac_schedule_send_chunks
 		 *
 		 * @param int $object_id expects the post_id or comment_id
@@ -669,6 +670,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		/**
 		 * Prepare the data for the next chunk
+		 *
+		 * @since 0.0.7 (2016.04.09)
 		 *
 		 * @param int $object_id expects the post_id or comment_id
 		 * @param string $object_type expects the posttype like post or comment
@@ -692,7 +695,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			}else{
 
-				#ToDo: If implemented a logger logg here a error if $mail_to_chunks empty
+				#ToDo: If implemented a logger log here a error if $mail_to_chunks empty
 
 			}
 
