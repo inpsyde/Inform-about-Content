@@ -575,8 +575,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
 
-				$send_next_group = FALSE;
+				$send_next_group = array();
 
+				// send_next_group is a list of next recipients
 				if( array_key_exists( 'send_next_group', $this->options[ 'static_options' ] ) ){
 
 					$object_id = $this->options[ 'static_options' ][ 'object' ]['id'];
@@ -611,11 +612,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @since 0.0.7 (2016.04.09)
 		 *
 		 * @param array $to
-		 * @param bool|FALSE $mail_to_chunks
+		 * @param array $mail_to_chunks
 		 *
 		 * @return string
 		 */
-		private function get_mail_to_chunk( $to, $mail_to_chunks = FALSE ){
+		private function get_mail_to_chunk( $to, $mail_to_chunks = array() ){
 
 			$object_id      = $this->options[ 'static_options' ][ 'object' ][ 'id' ];
 			$object_type    = $this->options[ 'static_options' ][ 'object' ][ 'type' ];
