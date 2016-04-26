@@ -570,11 +570,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			if( $this->options['static_options']['mail_to_chunking']['chunking'] === TRUE ){
 
+				// the next group of recipients
 				$send_next_group = array();
-
-				// send_next_group is a list of next recipients
 				if( array_key_exists( 'send_next_group', $this->options[ 'static_options' ] ) ){
-
 					$object_id = $this->options[ 'static_options' ][ 'object' ]['id'];
 					$send_next_group = $this->options[ 'static_options' ][ 'send_next_group' ][$object_id];
 				}
@@ -606,47 +604,39 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @since 0.0.7 (2016.04.09)
 		 *
-		 * @param array $to
-		 * @param array $mail_to_chunks
+		 * @param array $to (List of total remaining recipients)
+		 * @param array $send_next_group (List of the next recipients)
 		 *
 		 * @return string
 		 */
-		private function get_mail_to_chunk( $to, $mail_to_chunks = array() ){
+		private function get_mail_to_chunk( $to, $send_next_group = array() ){
 
 			$object_id      = $this->options[ 'static_options' ][ 'object' ][ 'id' ];
 			$object_type    = $this->options[ 'static_options' ][ 'object' ][ 'type' ];
 
-			if( empty( $mail_to_chunks ) ){
-
-				$count = 0;
-				$chunk = 0;
+			if( empty( $send_next_group ) ) {
+				// split total remaining recipient list in lists of smaller size
 				$chunk_size = $this->options['static_options']['mail_to_chunking']['chunksize'];
-
-				foreach( $to as $email_address ){
-					if( $count > $chunk_size ){
-						$chunk++;
-						$count = 0;
-					}
-					$mail_to_chunks[ $chunk ][] = $email_address;
-					$count++;
-				}
-
+				$send_next_group = array_chunk( $to, $chunk_size );
 			}
 
-			$to = implode( ',', apply_filters( 'iac_email_address_chunk', $mail_to_chunks[0] ) );
-
-			unset( $mail_to_chunks[0] );
-
-			$mail_to_chunks = array_values( $mail_to_chunks );
+			/**
+			 * Group of recipients
+			 *
+			 * @param array $send_next_group
+			 *
+			 * @return array
+			 */
+			$to = apply_filters( 'iac_email_address_chunk', array_shift( $send_next_group ) );
+			$to = implode( ',', $to );
 
 			wp_schedule_single_event(
 				time() + $this->options['static_options']['schedule_interval'],
 				'iac_schedule_send_chunks',
-				array( $object_id, $object_type, $mail_to_chunks )
+				array( $object_id, $object_type, $send_next_group )
 			);
 
 			return $to;
-
 		}
 
 		/**
@@ -656,7 +646,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @wp-hook iac_schedule_send_chunks
 		 *
 		 * @param int $object_id expects the post_id or comment_id
-		 * @param string $object_type expects the posttype like post or comment
+		 * @param string $object_type expects the post type like post or comment
 		 * @param array $mail_to_chunks
 		 *
 		 * @return void
@@ -672,7 +662,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @since 0.0.7 (2016.04.09)
 		 *
 		 * @param int $object_id expects the post_id or comment_id
-		 * @param string $object_type expects the posttype like post or comment
+		 * @param string $object_type expects the post type like post or comment
 		 * @param array $mail_to_chunks
 		 *
 		 * @return void
@@ -695,7 +685,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			}else{
 
-				#ToDo: If implemented a logger log here a error if $mail_to_chunks empty
+				//ToDo: If implemented a logger log here a error if $mail_to_chunks empty
 
 			}
 
