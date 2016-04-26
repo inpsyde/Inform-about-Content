@@ -662,6 +662,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @param int $object_id expects the post_id or comment_id
 		 * @param string $object_type expects the posttype like post or comment
 		 * @param array $mail_to_chunks
+		 *
+		 * @return void
 		 */
 		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
 
@@ -676,6 +678,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @param int $object_id expects the post_id or comment_id
 		 * @param string $object_type expects the posttype like post or comment
 		 * @param array $mail_to_chunks
+		 *
+		 * * @return void
 		 */
 		private function modulate_next_group( $object_id, $object_type, $mail_to_chunks  ){
 
