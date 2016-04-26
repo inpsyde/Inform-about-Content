@@ -36,10 +36,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 	add_filter( 'iac_post_message',    'strip_shortcodes' );
 	add_filter( 'iac_comment_message', 'strip_shortcodes' );
 
-	# since 0.0.7
-	#add_filter( 'iac_single_email_address', 'mask_address' );
-	#add_filter( 'iac_email_address_chunk', 'add_test_emailaddress' );
-
 	class Inform_About_Content {
 
 		/**
