@@ -195,10 +195,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
-			#log settings
-			add_filter( 'logfile_path', function(){ return __DIR__ . '/log/'; } );
-			add_filter( 'logfile_name', function(){ return 'app.log'; } );
-
 			# add cron actions
 			add_action( 'iac_schedule_send_chunks', array( $this, 'schedule_send_next_group' ), 10, 3 );
 
