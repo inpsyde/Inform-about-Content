@@ -658,8 +658,8 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @wp-hook iac_schedule_send_chunks
 		 *
-		 * @param int $object_id
-		 * @param string $object_type
+		 * @param int $object_id expects the post_id or comment_id
+		 * @param string $object_type expects the posttype like post or comment
 		 * @param array $mail_to_chunks
 		 */
 		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
@@ -668,8 +668,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
-		 * @param string $type means posttype post or comment
-		 * @param array $chunks
+		 * Prepare the data for the next chunk
+		 *
+		 * @param int $object_id expects the post_id or comment_id
+		 * @param string $object_type expects the posttype like post or comment
+		 * @param array $mail_to_chunks
 		 */
 		private function modulate_next_group( $object_id, $object_type, $mail_to_chunks  ){
 
@@ -689,7 +692,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 			}else{
 
-				//logg error
+				#ToDo: If implemented a logger logg here a error if $mail_to_chunks empty
 
 			}
 
