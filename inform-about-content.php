@@ -112,11 +112,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public static function get_object() {
 
-			if ( NULL === self :: $classobj ) {
-				self :: $classobj = new self;
+			if ( NULL === self::$classobj ) {
+				self::$classobj = new self;
 			}
 
-			return self :: $classobj;
+			return self::$classobj;
 		}
 
 		/**
@@ -215,6 +215,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @access  public
 		 * @since   0.0.2
+		 *
 		 * @return  string
 		 */
 		public static function get_textdomain() {
@@ -226,9 +227,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * localize_plugin function.
 		 *
 		 * @uses   load_plugin_textdomain, plugin_basename
-		 * @access public
 		 * @since  0.0.2
-		 * @return void
 		 */
 		public function localize_plugin() {
 
@@ -242,12 +241,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 
 		/**
 		 * Get user-mails from all users of a blog by a meta key and the exclusion value ( `!=` operator )
-		 *
-		 * @access  public
+
 		 * @since  0.0.1
 		 * @used   get_users
+		 *
 		 * @param  string $current_user_email email of user
 		 * @param  string $context should be 'comment' or 'post'
+		 *
 		 * @return array $users
 		 */
 		public function get_members( $current_user_email = NULL, $context = '' ) {
@@ -296,17 +296,18 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			 * @return array
 			 */
 			return apply_filters( 'iac_get_members', $user_addresses );
-
 		}
 
 		/**
 		 * get users by meta key
 		 *
 		 * @since 0.0.5
+		 *
 		 * @param string $meta_key
 		 * @param string $meta_value (Optional)
 		 * @param string $meta_compare (Optional) Out of '!=', '<>' OR '='
-		 * @param bool $include_empty (Optional) Set this to TRUE to retreve Users where the meta-key has not been set yet
+		 * @param bool $include_empty (Optional) Set to TRUE to retrieve Users where the meta-key has not been set yet
+		 *
 		 * @return array of user-objects
 		 */
 		public function get_users_by_meta( $meta_key, $meta_value = '', $meta_compare = '', $include_empty = FALSE ) {
@@ -356,10 +357,10 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @wp-hook transition_post_status
 		 * @since 2013.07.17
+		 *
 		 * @param string $new_status
 		 * @param string $old_status
 		 * @param WP_Post $post
-		 * @return void
 		 */
 		public function save_transit_posts( $new_status, $old_status, $post ) {
 
@@ -374,10 +375,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * Send mail, if changes a status form not 'publish' to 'publish'
 		 *
 		 * @wp_hook publish_post
-		 * @access  public
-		 * @sinde   0.0.1
+		 * @since   0.0.1
 		 * @used    get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
-		 * @param   string $post_id
+		 *
+		 * @param   string|bool $post_id
+		 *
 		 * @return  string $post_id
 		 */
 		public function inform_about_posts( $post_id = FALSE ) {
@@ -449,11 +451,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		/**
 		 * Send mail, if approved a new comment
 		 *
-		 * @access  public
-		 * @sinde   0.0.1
+		 * @since   0.0.1
 		 * @used    get_comment, get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
-		 * @param   string $comment_id
+		 *
+		 * @param   string|bool $comment_id
 		 * @param   boolean $comment_status
+		 *
 		 * @return  string $comment_id
 		 */
 		public function inform_about_comment( $comment_id = FALSE, $comment_status = FALSE ) {
@@ -648,8 +651,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @param int $object_id expects the post_id or comment_id
 		 * @param string $object_type expects the post type like post or comment
 		 * @param array $mail_to_chunks
-		 *
-		 * @return void
 		 */
 		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
 
@@ -670,23 +671,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		private function modulate_next_group( $object_id, $object_type, $mail_to_chunks  ){
 
 			if( ! empty( $mail_to_chunks ) ){
-
 				$this->options[ 'static_options' ][ 'send_next_group' ][ $object_id ] = $mail_to_chunks;
-
 				if( $object_type == 'post' ){
-
 					$this->inform_about_posts( $object_id );
-
 				}elseif( $object_type == 'comment' ){
-
 					$this->inform_about_comment( $object_id );
-
 				}
-
 			}else{
-
 				//ToDo: If implemented a logger log here a error if $mail_to_chunks empty
-
 			}
 
 		}
@@ -701,8 +693,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function append_signature( $message, $signature = '' ) {
 
-			if ( empty( $signature ) )
+			if ( empty( $signature ) ) {
 				return $message;
+			}
 
 			$separator = apply_filters( 'iac_signature_separator', str_repeat( PHP_EOL, 2 ) . '--' . PHP_EOL );
 
