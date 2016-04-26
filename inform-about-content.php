@@ -654,11 +654,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		}
 
 		/**
-		 * Cron callback
+		 * Cron callback for schedule event
 		 *
 		 * @wp-hook iac_schedule_send_chunks
 		 *
-		 * @param json|string $chunks
+		 * @param $object_id
+		 * @param $object_type
+		 * @param $mail_to_chunks
 		 */
 		public function schedule_send_next_group( $object_id, $object_type, $mail_to_chunks ){
 
