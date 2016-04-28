@@ -2,8 +2,8 @@
 Contributors: inpsyde, Bueltge, dnaber-de, hughwillfayle
 Tags: mail, comment, post
 Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 0.0.5
+Tested up to: 4.5
+Stable tag: 0.0.7
 
 Informs all users of a blog about a new post and approved comments via email
 
@@ -75,8 +75,8 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
-= 0.0.7-beta1 =
-* Implement mail recipient chunking.
+= 0.0.7 =
+* Send mails in smaller groups and schedule sending of groups
 * add new Filter Hooks
     * iac_get_members
     * iac_single_email_address
