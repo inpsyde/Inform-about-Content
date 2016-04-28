@@ -17,7 +17,7 @@ Have a look at the premium plugins in our [market](http://marketpress.com).
 
 ## Installation
 ### Requirements 
-* WordPress version 3.0 and later (tested at 3.4.1)
+* WordPress version 3.0 and later (tested at 3.5.1)
 * PHP 5.3; maybe 5.2, but untested
 
 ### Installation
@@ -25,7 +25,7 @@ Have a look at the premium plugins in our [market](http://marketpress.com).
 1. Upload the folder and all folder and files includes this to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Optional: Change global settings on 'Settings' → 'Reading'
-1. Thats all
+1. That's all
 
 
 ## Screenshots
