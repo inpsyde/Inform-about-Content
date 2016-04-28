@@ -75,8 +75,8 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
-= 0.0.7-rc1 =
-* Implement Send Mail chunking.
+= 0.0.7-beta1 =
+* Implement mail recipient chunking.
 * add new Filter Hooks
     * iac_get_members
     * iac_single_email_address
