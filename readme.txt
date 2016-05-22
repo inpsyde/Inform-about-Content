@@ -69,6 +69,11 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
+= 1.0.0 (in development) =
+* Use semantic version numbers
+* Fix logical bug in `Iac_Profile_Settings::get_user_settings()`. Default opt-in setting is now evaluated correctly
+* Add a column to user list table to show subscription status of each user. (Column key: `iac_subscriptions`)
+
 = 0.0.7 =
 * Send mails in smaller groups and schedule sending of groups
 * add new Filter Hooks

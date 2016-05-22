@@ -17,8 +17,8 @@ Have a look at the premium plugins in our [market](http://marketpress.com).
 
 ## Installation
 ### Requirements 
-* WordPress version 3.0 and later (tested at 3.5.1)
-* PHP 5.3; maybe 5.2, but untested
+* WordPress version 3.0 and later (tested at 3.5.1 up to 4.5.2)
+* PHP 5.3 but we _strongly recommend_ to user at least PHP version 5.6
 
 ### Installation
 1. Unpack the download-package
