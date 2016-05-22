@@ -135,7 +135,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			if ( function_exists( 'spl_autoload_register' ) ) {
 				spl_autoload_register( array( __CLASS__, 'load_class' ) );
 			} else {
-				$this->load_class( NULL );
+				$this->load_class();
 			}
 
 			// change the default behaviour from outside
@@ -192,7 +192,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			 * $iac_options = apply_filters( 'iac_get_options', [] );
 			 */
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
-
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
 
 			# add cron actions
@@ -813,11 +812,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @since 0.0.5
 		 *
-		 * @param string $class_name
+		 * @param NULL|string $class_name
 		 *
-		 * @return void
+		 * @return bool
 		 */
-		public static function load_class( $class_name ) {
+		public static function load_class( $class_name = NULL ) {
 
 			// if spl_autoload_register not exist
 			if ( NULL === $class_name ) {
@@ -826,13 +825,19 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 					require_once $path;
 				}
 			} else {
+				if ( 0 !== strpos( $class_name, 'Iac_' ) )
+					return FALSE;
+
 				// if param have a class string
 				$path = dirname( __FILE__ ) . '/inc/class-' . $class_name . '.php';
-
 				if ( file_exists( $path ) ) {
 					require_once $path;
+
+					return TRUE;
 				}
 			}
+
+			return FALSE;
 		}
 
 	} // end class Inform_About_Content
