@@ -147,7 +147,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$this->mail_string_by             = __( 'by', $this->get_textdomain() );
 			$this->mail_string_url            = __( 'URL', $this->get_textdomain() );
 
-			$Iac_Profile_Settings              = Iac_Profile_Settings:: get_object();
+			$Iac_Profile_Settings              = Iac_Profile_Settings::get_object();
 			$settings                          = new Iac_Settings();
 			$this->options                     = $settings->options;
 			$this->options[ 'default_opt_in' ] = self::$default_opt_in;
