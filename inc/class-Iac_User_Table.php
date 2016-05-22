@@ -52,28 +52,22 @@ class Iac_User_Table {
 		$check = "\xe2\x9c\x93";
 		// Unicode ballot X u2717: ✗
 		$ballot_x = "\xe2\x9c\x97";
-		$default_opt_in = $this->options[ 'default_opt_in' ];
-		$subscribe_negotiation = function( $meta_value ) use ( $default_opt_in, $check, $ballot_x ) {
-			if ( in_array( $meta_value, array( '0', '1' ), TRUE ) ) {
-				// if the user has set explicit value, take this as state
-				return $meta_value
-					? $check
-					: $ballot_x;
+
+		$user_settings    = apply_filters( 'iac_get_user_settings', array(), $user_id );
+		$subscribe_status = function( $type ) use ( $user_settings, $check, $ballot_x ) {
+			$key = "inform_about_{$type}s";
+			if ( ! isset( $user_settings[ $key ] ) ) {
+				return $ballot_x;
 			}
-			// meta value should be empty (not set yet) here, fall back to default:
-			return $default_opt_in
+
+			return $user_settings[ $key ]
 				? $check
 				: $ballot_x;
 		};
 
-		$posts = $subscribe_negotiation(
-			get_user_meta( $user_id, 'post_subscription', TRUE )
-		);
-		$comments = $subscribe_negotiation(
-			get_user_meta( $user_id, 'comment_subscription', TRUE )
-		);
-
-		$cell =
+		$posts    = $subscribe_status( 'post' );
+		$comments = $subscribe_status( 'comment' );
+		$cell     =
 			  __( 'Posts', 'inform_about_content' ) . ": $posts<br/>"
 			. __( 'Comments', 'inform_about_content' ) . ": $comments";
 
