@@ -150,6 +150,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$Iac_Profile_Settings              = Iac_Profile_Settings:: get_object();
 			$settings                          = new Iac_Settings();
 			$this->options                     = $settings->options;
+			$this->options[ 'default_opt_in' ] = self::$default_opt_in;
 			$this->options[ 'static_options' ] = array(
 				/**
 				 * Filter the time interval for the enqueued mails
@@ -193,6 +194,14 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			 */
 			add_filter( 'iac_get_options', array( $this, 'get_options' ) );
 			add_action( 'admin_init', array( $this, 'localize_plugin' ), 9 );
+
+			# user table column
+			$user_column = new Iac_User_Table( $this->options );
+			add_filter( 'manage_users_columns', array( $user_column, 'table_header') );
+			add_filter( 'manage_users_custom_column', array( $user_column, 'table_column' ), 10, 3 );
+			if ( is_multisite() ) {
+				add_filter( 'wpmu_users_columns', array( $user_column, 'table_header') );
+			}
 
 			# add cron actions
 			add_action( 'iac_schedule_send_chunks', array( $this, 'schedule_send_next_group' ), 10, 3 );
