@@ -1,4 +1,5 @@
-<?php
+<?php # -*- coding: utf-8 -*-
+
 /**
  * Informer- Profile Settings
  * @license GPLv2
@@ -8,8 +9,14 @@
 
 class Iac_Profile_Settings {
 
+	/**
+	 * @var Iac_Profile_Settings
+	 */
 	static private $classobj = NULL;
-	// string for translation
+
+	/**
+	 * @var string
+	 */
 	public $textdomain;
 
 	/**
@@ -17,7 +24,8 @@ class Iac_Profile_Settings {
 	 *
 	 * @access public
 	 * @since 0.0.2
-	 * @return $classobj
+	 *
+	 * @return Iac_Profile_Settings
 	 */
 	public static function get_object() {
 
@@ -31,10 +39,8 @@ class Iac_Profile_Settings {
 	/**
 	 * Construvtor, init on defined hooks of WP and include second class
 	 *
-	 * @access  public
 	 * @since   0.0.2
 	 * @uses    register_activation_hook, register_uninstall_hook, add_action
-	 * @return  void
 	 */
 	public function __construct() {
 
@@ -56,7 +62,6 @@ class Iac_Profile_Settings {
 	/**
 	 * Return Textdomain string
 	 *
-	 * @access  public
 	 * @since   0.0.2
 	 * @return  string
 	 */
@@ -68,7 +73,6 @@ class Iac_Profile_Settings {
 	/**
 	 * Remove meta data from all users of the blog
 	 *
-	 * @access public
 	 * @since  0.0.2
 	 * @uses   delete_user_meta, get_users
 	 * @return void
@@ -89,10 +93,14 @@ class Iac_Profile_Settings {
 	/**
 	 * Add cutom profile fields
 	 *
-	 * @access public
+	 * @wp-hook show_user_profile
+	 * @wp-hook edit_user_profile
+	 *
 	 * @since  0.0.2
 	 * @uses   _e, checked
+	 *
 	 * @param  array $user
+	 *
 	 * @return void
 	 */
 	public function add_custom_profile_fields( $user ) {
@@ -130,10 +138,14 @@ class Iac_Profile_Settings {
 	/**
 	 * Save meta data from custom profile fields
 	 *
-	 * @access public
+	 * @wp-hook personal_options_update
+	 * @wp-hook edit_user_profile_update
+	 *
 	 * @since  0.0.2
 	 * @uses   current_user_can, update_user_meta
+	 *
 	 * @param  string $user_id
+	 *
 	 * @return void
 	 */
 	public function save_custom_profile_fields( $user_id ) {
@@ -164,12 +176,11 @@ class Iac_Profile_Settings {
 	 * @param int $user_id
 	 * @param string $inform_about_posts
 	 * @param string $inform_about_comments
-	 * @return void
 	 */
 	public function save_user_settings( $user_id, $inform_about_posts = NULL, $inform_about_comments = NULL ) {
 
 		if ( ! current_user_can( 'edit_user', $user_id ) )
-			return FALSE;
+			return;
 
 		$default_opt_in             = apply_filters( 'iac_default_opt_in', FALSE );
 		$prev_inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
@@ -223,6 +234,7 @@ class Iac_Profile_Settings {
 	 *
 	 * @param $default
 	 * @param int $user_id
+	 *
 	 * @return array
 	 */
 	public function get_user_settings( $default = array(), $user_id = NULL ) {
@@ -248,4 +260,3 @@ class Iac_Profile_Settings {
 	}
 
 }
-?>
