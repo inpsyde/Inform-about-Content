@@ -244,8 +244,8 @@ class Iac_Profile_Settings {
 
 		$default_opt_in = apply_filters( 'iac_default_opt_in', FALSE );
 		$default = $default_opt_in
-			? '0'
-			: '1';
+			? '1'
+			: '0';
 
 		$settings = array(
 			'inform_about_posts'    => get_user_meta( $user_id, 'post_subscription', TRUE ),
