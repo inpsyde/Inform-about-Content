@@ -108,9 +108,9 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		/**
 		 * Handler for the action 'init'. Instantiates this class.
 		 *
-		 * @access public
 		 * @since 0.0.1
-		 * @return $classobj
+		 *
+		 * @return Inform_About_Content
 		 */
 		public static function get_object() {
 
@@ -124,7 +124,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		/**
 		 * Constructor, init on defined hooks of WP and include second class
 		 *
-		 * @access  public
 		 * @since   0.0.1
 		 * @uses    add_action
 		 */
@@ -227,7 +226,6 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		/**
 		 * Return Textdomain string
 		 *
-		 * @access  public
 		 * @since   0.0.2
 		 *
 		 * @return  string
@@ -257,7 +255,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * Get user-mails from all users of a blog by a meta key and the exclusion value ( `!=` operator )
 		 *
 		 * @since  0.0.1
-		 * @used   get_users
+		 * @uses   get_users
 		 *
 		 * @param  string $current_user_email email of user
 		 * @param  string $context should be 'comment' or 'post'
@@ -385,7 +383,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 *
 		 * @wp_hook publish_post
 		 * @since   0.0.1
-		 * @used    get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
+		 * @uses    get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
 		 *
 		 * @param   string|bool $post_id
 		 *
@@ -461,7 +459,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * Send mail, if approved a new comment
 		 *
 		 * @since   0.0.1
-		 * @used    get_comment, get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
+		 * @uses    get_comment, get_post, get_userdata, get_author_name, get_option, wp_mail, get_permalink
 		 *
 		 * @param   string|bool $comment_id
 		 * @param   boolean $comment_status
