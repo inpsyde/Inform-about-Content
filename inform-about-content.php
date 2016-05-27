@@ -391,66 +391,66 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function inform_about_posts( $post_id = FALSE ) {
 
-			if ( $post_id ) {
-
-				if ( ! isset( $this->transit_posts[ $post_id ] ) ) {
-					return $post_id;
-				}
-
-				$transit = $this->transit_posts[ $post_id ];
-				if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] ) {
-					return $post_id;
-				}
-
-				// get data from current post
-				$post_data = get_post( $post_id );
-				// get mail from author
-				$user = get_userdata( $post_data->post_author );
-
-				// email addresses
-				$to = $this->get_members( $user->data->user_email, 'post' );
-				if ( empty( $to ) ) {
-					return $post_id;
-				}
-
-				// email subject
-				$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
-				// message content
-				$message = $post_data->post_content;
-				# create header data
-				$headers = array();
-				# From:
-				$headers[ 'From' ] =
-					get_the_author_meta( 'display_name', $user->ID ) .
-					' (' . get_bloginfo( 'name' ) . ')' .
-					' <' . $user->data->user_email . '>';
-
-				if ( $this->options[ 'send_by_bcc' ] ) {
-					$bcc              = $to;
-					$to               = empty( $this->options[ 'bcc_to_recipient' ] )
-						? get_bloginfo( 'admin_email' )
-						: $this->options[ 'bcc_to_recipient' ];
-					$headers[ 'Bcc' ] = $bcc;
-				}
-
-				$to          = apply_filters( 'iac_post_to', $to, $this->options, $post_id );
-				$subject     = apply_filters( 'iac_post_subject', $subject, $this->options, $post_id );
-				$message     = apply_filters( 'iac_post_message', $message, $this->options, $post_id );
-				$headers     = apply_filters( 'iac_post_headers', $headers, $this->options, $post_id );
-				$attachments = apply_filters( 'iac_post_attachments', array(), $this->options, $post_id );
-				$signature   = apply_filters( 'iac_post_signature', '', $this->options, $post_id );
-
-				$this->options[ 'static_options' ][ 'object' ] = array( 'id' => $post_id, 'type' => 'post' );
-
-				$this->send_mail(
-					$to,
-					$subject,
-					$this->append_signature( $message, $signature ),
-					$headers,
-					$attachments
-				);
-
+			if ( ! $post_id ) {
+				return $post_id;
 			}
+
+			if ( ! isset( $this->transit_posts[ $post_id ] ) ) {
+				return $post_id;
+			}
+
+			$transit = $this->transit_posts[ $post_id ];
+			if ( 'publish' != $transit[ 'new_status' ] || 'publish' == $transit[ 'old_status' ] ) {
+				return $post_id;
+			}
+
+			// get data from current post
+			$post_data = get_post( $post_id );
+			// get mail from author
+			$user = get_userdata( $post_data->post_author );
+
+			// email addresses
+			$to = $this->get_members( $user->data->user_email, 'post' );
+			if ( empty( $to ) ) {
+				return $post_id;
+			}
+
+			// email subject
+			$subject = get_option( 'blogname' ) . ': ' . get_the_title( $post_data->ID );
+			// message content
+			$message = $post_data->post_content;
+			# create header data
+			$headers = array();
+			# From:
+			$headers[ 'From' ] =
+				get_the_author_meta( 'display_name', $user->ID ) .
+				' (' . get_bloginfo( 'name' ) . ')' .
+				' <' . $user->data->user_email . '>';
+
+			if ( $this->options[ 'send_by_bcc' ] ) {
+				$bcc              = $to;
+				$to               = empty( $this->options[ 'bcc_to_recipient' ] )
+					? get_bloginfo( 'admin_email' )
+					: $this->options[ 'bcc_to_recipient' ];
+				$headers[ 'Bcc' ] = $bcc;
+			}
+
+			$to          = apply_filters( 'iac_post_to', $to, $this->options, $post_id );
+			$subject     = apply_filters( 'iac_post_subject', $subject, $this->options, $post_id );
+			$message     = apply_filters( 'iac_post_message', $message, $this->options, $post_id );
+			$headers     = apply_filters( 'iac_post_headers', $headers, $this->options, $post_id );
+			$attachments = apply_filters( 'iac_post_attachments', array(), $this->options, $post_id );
+			$signature   = apply_filters( 'iac_post_signature', '', $this->options, $post_id );
+
+			$this->options[ 'static_options' ][ 'object' ] = array( 'id' => $post_id, 'type' => 'post' );
+
+			$this->send_mail(
+				$to,
+				$subject,
+				$this->append_signature( $message, $signature ),
+				$headers,
+				$attachments
+			);
 
 			return $post_id;
 		}
@@ -468,96 +468,99 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 */
 		public function inform_about_comment( $comment_id = FALSE, $comment_status = FALSE ) {
 
-			if ( $comment_id ) {
-				// get data from current comment
-				$comment_data = get_comment( $comment_id );
-				// if comment status is approved
-				if ( '1' === $comment_data->comment_approved || $comment_status ) {
-					// get data from post to this comment
-					$post_data = get_post( $comment_data->comment_post_ID );
-					// the commenter
-					$commenter = array(
-						'name'  => 'Annonymous',
-						'email' => '',
-						'url'   => ''
-					);
+			if ( ! $comment_id ) {
+				return $comment_id;
+			}
 
-					if ( 0 != $comment_data->user_id && $user = get_userdata( $comment_data->user_id ) ) {
-						// the comment author
-						$user                 = get_userdata( $comment_data->user_id );
-						$commenter[ 'name' ]  = get_the_author_meta( 'display_name', $user->ID );
-						$commenter[ 'email' ] = $user->data->user_email;
-						$commenter[ 'url' ]   = $user->data->user_url;
-					} else {
-						if ( ! empty( $comment_data->comment_author ) ) {
-							$commenter[ 'name' ] = $comment_data->comment_author;
-						}
+			// get data from current comment
+			$comment_data = get_comment( $comment_id );
+			// if comment status is approved
+			if ( '1' !== $comment_data->comment_approved && ! $comment_status ) {
+				return $comment_id;
+			}
 
-						# don't propagate email-address of non-registered users by default
-						if ( ! empty( $comment_data->comment_author_email ) ) {
-							if ( TRUE === apply_filters( 'iac_comment_author_email_to_header', FALSE ) ) {
-								$commenter[ 'email' ] = $comment_data->comment_author_email;
-							}
-						}
+			// get data from post to this comment
+			$post_data = get_post( $comment_data->comment_post_ID );
+			// the commenter
+			$commenter = array(
+				'name'  => 'Annonymous',
+				'email' => '',
+				'url'   => ''
+			);
 
-						if ( ! empty( $comment_data->comment_author_url ) ) {
-							$commenter[ 'url' ] = $comment_data->comment_author_url;
-						}
+			if ( 0 != $comment_data->user_id && $user = get_userdata( $comment_data->user_id ) ) {
+				// the comment author
+				$user                 = get_userdata( $comment_data->user_id );
+				$commenter[ 'name' ]  = get_the_author_meta( 'display_name', $user->ID );
+				$commenter[ 'email' ] = $user->data->user_email;
+				$commenter[ 'url' ]   = $user->data->user_url;
+			} else {
+				if ( ! empty( $comment_data->comment_author ) ) {
+					$commenter[ 'name' ] = $comment_data->comment_author;
+				}
+
+				# don't propagate email-address of non-registered users by default
+				if ( ! empty( $comment_data->comment_author_email ) ) {
+					if ( TRUE === apply_filters( 'iac_comment_author_email_to_header', FALSE ) ) {
+						$commenter[ 'email' ] = $comment_data->comment_author_email;
 					}
+				}
 
-					// email addresses
-					$to = $this->get_members( $commenter[ 'email' ], 'comment' );
-					if ( empty( $to ) ) {
-						return $comment_id;
-					}
-
-					// email subject
-					$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
-					// message content
-					$message = $comment_data->comment_content;
-					// create header data
-					$headers = array();
-					if ( ! empty( $commenter[ 'email' ] ) ) {
-						$headers[ 'From' ] =
-							$commenter[ 'name' ] .
-							' (' . get_bloginfo( 'name' ) . ')' .
-							' <' . $commenter[ 'email' ] . '>';
-					} else {
-						$headers[ 'From' ] =
-							$commenter[ 'name' ] .
-							' (' . get_bloginfo( 'name' ) . ')' .
-							' <' . get_option( 'admin_email' ) . '>';
-					}
-
-					if ( $this->options[ 'send_by_bcc' ] ) {
-						#copy list of recipients to 'bcc'
-						$bcc = $to;
-						# set a 'To' header
-						$to               = empty( $this->options[ 'bcc_to_recipient' ] )
-							? get_bloginfo( 'admin_email' )
-							: $this->options[ 'bcc_to_recipient' ];
-						$headers[ 'Bcc' ] = $bcc;
-					}
-
-					$to          = apply_filters( 'iac_comment_to', $to, $this->options, $comment_id );
-					$subject     = apply_filters( 'iac_comment_subject', $subject, $this->options, $comment_id );
-					$message     = apply_filters( 'iac_comment_message', $message, $this->options, $comment_id );
-					$headers     = apply_filters( 'iac_comment_headers', $headers, $this->options, $comment_id );
-					$attachments = apply_filters( 'iac_comment_attachments', array(), $this->options, $comment_id );
-					$signature   = apply_filters( 'iac_comment_signature', '', $this->options, $comment_id );
-
-					$this->options[ 'static_options' ][ 'object' ] = array( 'id' => $comment_id, 'type' => 'comment' );
-
-					$this->send_mail(
-						$to,
-						$subject,
-						$this->append_signature( $message, $signature ),
-						$headers,
-						$attachments
-					);
-
+				if ( ! empty( $comment_data->comment_author_url ) ) {
+					$commenter[ 'url' ] = $comment_data->comment_author_url;
 				}
 			}
+
+			// email addresses
+			$to = $this->get_members( $commenter[ 'email' ], 'comment' );
+			if ( empty( $to ) ) {
+				return $comment_id;
+			}
+
+			// email subject
+			$subject = get_bloginfo( 'name' ) . ': ' . get_the_title( $post_data->ID );
+			// message content
+			$message = $comment_data->comment_content;
+			// create header data
+			$headers = array();
+			if ( ! empty( $commenter[ 'email' ] ) ) {
+				$headers[ 'From' ] =
+					$commenter[ 'name' ] .
+					' (' . get_bloginfo( 'name' ) . ')' .
+					' <' . $commenter[ 'email' ] . '>';
+			} else {
+				$headers[ 'From' ] =
+					$commenter[ 'name' ] .
+					' (' . get_bloginfo( 'name' ) . ')' .
+					' <' . get_option( 'admin_email' ) . '>';
+			}
+
+			if ( $this->options[ 'send_by_bcc' ] ) {
+				#copy list of recipients to 'bcc'
+				$bcc = $to;
+				# set a 'To' header
+				$to               = empty( $this->options[ 'bcc_to_recipient' ] )
+					? get_bloginfo( 'admin_email' )
+					: $this->options[ 'bcc_to_recipient' ];
+				$headers[ 'Bcc' ] = $bcc;
+			}
+
+			$to          = apply_filters( 'iac_comment_to', $to, $this->options, $comment_id );
+			$subject     = apply_filters( 'iac_comment_subject', $subject, $this->options, $comment_id );
+			$message     = apply_filters( 'iac_comment_message', $message, $this->options, $comment_id );
+			$headers     = apply_filters( 'iac_comment_headers', $headers, $this->options, $comment_id );
+			$attachments = apply_filters( 'iac_comment_attachments', array(), $this->options, $comment_id );
+			$signature   = apply_filters( 'iac_comment_signature', '', $this->options, $comment_id );
+
+			$this->options[ 'static_options' ][ 'object' ] = array( 'id' => $comment_id, 'type' => 'comment' );
+
+			$this->send_mail(
+				$to,
+				$subject,
+				$this->append_signature( $message, $signature ),
+				$headers,
+				$attachments
+			);
 
 			return $comment_id;
 		}
