@@ -631,11 +631,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			/**
 			 * Group of recipients
 			 *
-			 * @param array $send_next_group
+			 * @param array  $send_next_group
+			 * @param int    $object_id
+			 * @param string $object_type
 			 *
 			 * @return array
 			 */
-			$to = apply_filters( 'iac_email_address_chunk', array_shift( $send_next_group ) );
+			$to = apply_filters( 'iac_email_address_chunk', array_shift( $send_next_group ), $object_id, $object_type );
 			$to = implode( ',', $to );
 
 			wp_schedule_single_event(
