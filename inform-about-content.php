@@ -683,6 +683,12 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			if ( ! empty( $mail_to_chunks ) ) {
 				$this->options[ 'static_options' ][ 'send_next_group' ][ $object_id ] = $mail_to_chunks;
 				if ( $object_type == 'post' ) {
+					// need to emulate the internal state as
+					// it would have been triggered by a save_post() call
+					$this->transit_posts[ $object_id ] = array(
+						'new_status' => 'publish',
+						'old_status' => 'draft'
+					);
 					$this->inform_about_posts( $object_id );
 				} elseif ( $object_type == 'comment' ) {
 					$this->inform_about_comment( $object_id );
