@@ -616,7 +616,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * @since 0.0.7 (2016.04.09)
 		 *
 		 * @param array $to (List of total remaining recipients)
-		 * @param array $send_next_group (List of the next recipients)
+		 * @param array $send_next_group (List of the next recipients groups)
 		 *
 		 * @return string
 		 */
@@ -634,7 +634,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			/**
 			 * Group of recipients
 			 *
-			 * @param array  $send_next_group
+			 * @param array  $send_next_group (List of remaining recipients groups)
 			 * @param int    $object_id
 			 * @param string $object_type
 			 *
