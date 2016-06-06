@@ -634,7 +634,7 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			/**
 			 * Group of recipients
 			 *
-			 * @param array  $send_next_group (List of remaining recipients groups)
+			 * @param array  $send_next_group (List of next recipients to process)
 			 * @param int    $object_id
 			 * @param string $object_type
 			 *
