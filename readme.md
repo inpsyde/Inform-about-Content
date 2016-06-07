@@ -30,10 +30,10 @@ Have a look at the premium plugins in our [market](http://marketpress.com).
 
 ## Screenshots
 1. Settings on profile page
-![Screenshot of Settings on profile page](https://raw.github.com/bueltge/Inform-about-Content/master/assets/screenshot-1.png)
+![Screenshot of Settings on profile page](https://raw.github.com/inpsyde/Inform-about-Content/master/assets/screenshot-1.png)
 
 2. Settings on Settings → Reading
-![Screenshot of Settings on Settings → Reading](https://raw.github.com/bueltge/Inform-about-Content/master/assets/screenshot-2.png)
+![Screenshot of Settings on Settings → Reading](https://raw.github.com/inpsyde/Inform-about-Content/master/assets/screenshot-2.png)
 
 ## API
 ### Plugin settings
@@ -62,13 +62,13 @@ $user_settings = apply_filters( 'iac_get_user_settings', array(), $user_id );
 
 ## Other Notes
 ### Bugs, technical hints or contribute
-Please give us feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
+Please give us feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/inpsyde/Inform-about-Content).
 
 ### Authors, Contributors
-[Contributors Stats](https://github.com/bueltge/Inform-about-Content/graphs/contributors)
+[Contributors Stats](https://github.com/inpsyde/Inform-about-Content/graphs/contributors)
 
 ### License
 Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog.
 
 ## Changelog
-See [commits](https://github.com/bueltge/Inform-about-Content/commits/master) or read short [version](http://wordpress.org/extend/plugins/inform-about-content/changelog/)
+See [commits](https://github.com/inpsyde/Inform-about-Content/commits/master) or read short [version](http://wordpress.org/extend/plugins/inform-about-content/changelog/)
