@@ -1,0 +1,29 @@
+{
+	"name": "inpsyde/informer",
+	"description": "WordPress plugin that sends mails to all subscribers on new content",
+	"keywords": [ "WordPress", "newsletter", "notification" ],
+	"homepage": "https://github.com/inpsyde/Inform-about-Content/",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "David Naber",
+			"email": "d.naber@inpsyde.com",
+			"role": "developer"
+		},
+		{
+			"name": "René Reimann",
+			"email": "r.reimann@inpsyde.com",
+			"role": "developer"
+		},
+		{
+			"name": "Frank Bültge",
+			"email": "f.bueltge@inpsyde.com",
+			"role": "developer"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/inpsyde/Inform-about-Content/issues",
+		"forum": "https://wordpress.org/support/plugin/inform-about-content"
+	}
+}
