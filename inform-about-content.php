@@ -643,11 +643,13 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 			$to = apply_filters( 'iac_email_address_chunk', array_shift( $send_next_group ), $object_id, $object_type );
 			$to = implode( ',', $to );
 
-			wp_schedule_single_event(
-				time() + $this->options[ 'static_options' ][ 'schedule_interval' ],
-				'iac_schedule_send_chunks',
-				array( $object_id, $object_type, $send_next_group )
-			);
+			if ( ! empty( $send_next_group ) ) {
+				wp_schedule_single_event(
+					time() + $this->options[ 'static_options' ][ 'schedule_interval' ],
+					'iac_schedule_send_chunks',
+					array( $object_id, $object_type, $send_next_group )
+				);
+			}
 
 			return $to;
 		}
