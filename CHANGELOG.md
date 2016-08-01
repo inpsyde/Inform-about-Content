@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 * Fix logical bug in `Iac_Profile_Settings::get_user_settings()`. Default opt-in setting is now evaluated correctly
 * Fix bug in scheduled mail dispatching
+* Fixed bug in notification string in settings section
+* Fixed bug in de_DE translation
 
 ## [0.0.7]
 ### Added
