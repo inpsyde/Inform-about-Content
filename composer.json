@@ -25,5 +25,13 @@
 	"support": {
 		"issues": "https://github.com/inpsyde/Inform-about-Content/issues",
 		"forum": "https://wordpress.org/support/plugin/inform-about-content"
+	},
+	"autoload-dev": {
+		"classmap": [
+			"inc/"
+		]
+	},
+	"require-dev": {
+		"inpsyde/monkery-test-case": "~2.0"
 	}
 }
