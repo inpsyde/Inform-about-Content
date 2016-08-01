@@ -69,10 +69,11 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
-= 1.0.0 =
+= unreleased =
 * Use semantic version numbers (http://semver.org/)
+* New column in user list table that shows subscription status of each user. (Column key: `iac_subscriptions`)
+* Added CHANGELOG.md file
 * Fix logical bug in `Iac_Profile_Settings::get_user_settings()`. Default opt-in setting is now evaluated correctly
-* Add a column to user list table to show subscription status of each user. (Column key: `iac_subscriptions`)
 * Fix bug in scheduled mail dispatching
 
 = 0.0.7 =
