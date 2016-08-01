@@ -50,6 +50,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		 * TRUE    all users have to opt-out to the notification
 		 * FALSE   all users have to opt-in to the notification
 		 *
+		 * The terminology is quite misleading here: 'default_opt_in => FALSE' means
+		 * the user has to subscribe in a conscious action. 'default_opt_in => TRUE' means
+		 * everyone is subscribed by default unless they opt-out.
+		 * @link https://github.com/inpsyde/Inform-about-Content/issues/23
+		 *
 		 * @var bool
 		 */
 		static protected $default_opt_in = FALSE;
@@ -93,6 +98,11 @@ if ( ! class_exists( 'Inform_About_Content' ) ) {
 		/**
 		 * set's the default behaviour of mail sending
 		 * applied to the filter 'iac_default_opt_in'
+		 *
+		 * The terminology is quite misleading here: 'default_opt_in => FALSE' means
+		 * the user has to subscribe in a conscious action. 'default_opt_in => TRUE' means
+		 * everyone is subscribed by default unless they opt-out.
+		 * @link https://github.com/inpsyde/Inform-about-Content/issues/23
 		 *
 		 * @since 0.0.5
 		 *

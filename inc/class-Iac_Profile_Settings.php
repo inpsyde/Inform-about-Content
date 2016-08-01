@@ -189,6 +189,11 @@ class Iac_Profile_Settings {
 		if ( ! current_user_can( 'edit_user', $user_id ) )
 			return;
 
+		/**
+		 * TRUE: everyone is subscribed by default
+		 * FALSE: no one is subscribed by default
+		 * @link https://github.com/inpsyde/Inform-about-Content/issues/23
+		 */
 		$default_opt_in             = apply_filters( 'iac_default_opt_in', FALSE );
 		$prev_inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
 		$prev_inform_about_comments = get_user_meta( $user_id, 'comment_subscription', TRUE );
