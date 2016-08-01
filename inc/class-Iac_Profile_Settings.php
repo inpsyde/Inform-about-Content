@@ -106,8 +106,7 @@ class Iac_Profile_Settings {
 	public function add_custom_profile_fields( $user ) {
 
 		$user_settings = apply_filters( 'iac_get_user_settings', array(), $user->ID );
-		extract( $user_settings ); #'inform_about_posts', 'inform_about_comments'
-
+		$nonce         = wp_create_nonce( 'iac_user_settings' );
 	?>
 		<h3><?php _e( 'Informer?', $this->get_textdomain() ); ?></h3>
 
@@ -118,7 +117,7 @@ class Iac_Profile_Settings {
 				</th>
 				<td>
 					<input type="checkbox" id="post_subscription_checkbox" name="post_subscription" value="1"
-					<?php checked( '1', $inform_about_posts ); ?> />
+					<?php checked( '1', $user_settings[ 'inform_about_posts' ] ); ?> />
 					<span class="description"><?php _e( 'Inform about new posts via e-mail, without your own posts.', $this->get_textdomain() ); ?></span>
 				</td>
 			</tr>
@@ -128,8 +127,9 @@ class Iac_Profile_Settings {
 				</th>
 				<td>
 					<input type="checkbox" id="comment_subscription_checkbox" name="comment_subscription" value="1"
-					<?php checked( '1', $inform_about_comments ); ?> />
+					<?php checked( '1', $user_settings[ 'inform_about_comments' ] ); ?> />
 					<span class="description"><?php _e( 'Inform about new comments via e-mail, without your own comments.', $this->get_textdomain() ); ?></span>
+					<input type="hidden" name="iac_nonce" value="<?php echo $nonce;?>" />
 				</td>
 			</tr>
 		</table>
@@ -149,6 +149,13 @@ class Iac_Profile_Settings {
 	 * @return void
 	 */
 	public function save_custom_profile_fields( $user_id ) {
+
+		if ( 'POST' !== $_SERVER[ 'REQUEST_METHOD' ] || ! isset( $_POST[ 'iac_nonce' ] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( $_POST[ 'iac_nonce' ], 'iac_user_settings' ) ) {
+			return;
+		}
 
 		do_action(
 			'iac_save_user_settings',
