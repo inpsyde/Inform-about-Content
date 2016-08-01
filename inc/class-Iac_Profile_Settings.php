@@ -194,11 +194,11 @@ class Iac_Profile_Settings {
 		 * FALSE: no one is subscribed by default
 		 * @link https://github.com/inpsyde/Inform-about-Content/issues/23
 		 */
-		$default_opt_in             = apply_filters( 'iac_default_opt_in', FALSE );
+		$subscribed_by_default      = apply_filters( 'iac_default_opt_in', FALSE );
 		$prev_inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
 		$prev_inform_about_comments = get_user_meta( $user_id, 'comment_subscription', TRUE );
 
-		if ( $default_opt_in ) {
+		if ( $subscribed_by_default ) {
 			if ( is_null( $inform_about_posts ) && '' === $prev_inform_about_posts ) {
 				#nothing to do, user didn't changed the default behaviour
 				$inform_about_posts = NULL;
@@ -224,7 +224,7 @@ class Iac_Profile_Settings {
 				$inform_about_posts = '0';
 			}
 
-			if ( ! is_null(  $inform_about_comments ) && '' === $prev_inform_about_comments ) {
+			if ( ! is_null( $inform_about_comments ) && '' === $prev_inform_about_comments ) {
 				$inform_about_comments = NULL;
 			} elseif ( ! is_null( $inform_about_comments ) ) {
 				$inform_about_comments = '1';
