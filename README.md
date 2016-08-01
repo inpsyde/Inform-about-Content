@@ -41,7 +41,7 @@ By default, the plugin sends a mail to all registered users of a blog on new pos
 ```php
 add_filter( 'iac_default_opt_in', '__return_true' );
 ```
-Make shure, this code runs on the action ```plugins_loaded``` with a priority lower than 10 or earlier.
+Make sure, this code runs on the action ```plugins_loaded``` with a priority lower than 10 or earlier.
 
 With version 0.0.5 the plugin got settings (Settings→Reading). The one new option allows you to send all emails with the Bcc-header to hide users email-addresses to all other recipients. This option is disabled by default. You have access to the default settings via the filter ```iac_default_options```. An array is passed to this funktion with the key ```send_by_bcc```. Change the value to '1' and return the array on your callback function.
 
