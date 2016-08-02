@@ -183,11 +183,13 @@ class Iac_Profile_Settings {
 	 * @param int $user_id
 	 * @param string $inform_about_posts
 	 * @param string $inform_about_comments
+	 *
+	 * @return bool
 	 */
 	public function save_user_settings( $user_id, $inform_about_posts = NULL, $inform_about_comments = NULL ) {
 
 		if ( ! current_user_can( 'edit_user', $user_id ) )
-			return;
+			return FALSE;
 
 		/**
 		 * TRUE: everyone is subscribed by default
@@ -198,7 +200,7 @@ class Iac_Profile_Settings {
 		$prev_inform_about_posts    = get_user_meta( $user_id, 'post_subscription', TRUE );
 		$prev_inform_about_comments = get_user_meta( $user_id, 'comment_subscription', TRUE );
 
-		if ( $subscribed_by_default ) {
+		if ( ! $subscribed_by_default ) {
 			if ( is_null( $inform_about_posts ) && '' === $prev_inform_about_posts ) {
 				#nothing to do, user didn't changed the default behaviour
 				$inform_about_posts = NULL;
@@ -217,6 +219,7 @@ class Iac_Profile_Settings {
 			}
 		} else {
 			if ( ! is_null( $inform_about_posts ) && '' === $prev_inform_about_posts ) {
+				// nothing to do, the user didn't changed the default behavior
 				$inform_about_posts = NULL;
 			} elseif ( ! is_null( $inform_about_posts ) ) {
 				$inform_about_posts = '1';
@@ -239,6 +242,7 @@ class Iac_Profile_Settings {
 		if ( isset( $inform_about_comments ) )
 			update_user_meta( $user_id, 'comment_subscription', $inform_about_comments );
 
+		return TRUE;
 	}
 
 	/**
