@@ -2,7 +2,7 @@
 Contributors: inpsyde, Bueltge, dnaber-de, derpixler
 Tags: mail, comment, post
 Requires at least: 3.0
-Tested up to: 4.5.1
+Tested up to: 4.5.3
 Stable tag: 0.0.7
 
 Informs all users of a blog about a new post and approved comments via email
@@ -21,7 +21,7 @@ Please give us feedback, contribute and file technical bugs on [GitHub Repo](htt
 == Installation ==
 = Requirements  =
 * WordPress version 3.0 and later (see tested up to)
-* PHP 5.3; maybe 5.2, but untested
+* PHP 5.3 but we **strongly recommend** to use at least PHP version 5.6!
 
 = Installation =
 1. Unpack the download-package
@@ -30,6 +30,9 @@ Please give us feedback, contribute and file technical bugs on [GitHub Repo](htt
 1. Optional: Change global settings on 'Settings' --> 'Reading'
 1. That's all
 
+Alternatively you can install the plugin [directly via composer](https://packagist.org/packages/inpsyde/informer):
+
+`$ composer require inpsyde/informer`
 
 == Screenshots ==
 1. Settings on profile page
@@ -69,12 +72,23 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 
 == Changelog ==
+Complete changelog: https://github.com/inpsyde/Inform-about-Content/blob/master/CHANGELOG.md
+
 = unreleased =
+**Added:**
+
 * Use semantic version numbers (http://semver.org/)
 * New column in user list table that shows subscription status of each user. (Column key: `iac_subscriptions`)
-* Added CHANGELOG.md file
-* Fix logical bug in `Iac_Profile_Settings::get_user_settings()`. Default opt-in setting is now evaluated correctly
+* Add this CHANGELOG.md file
+* Add setup for PHPUnit tests and tests for `Iac_Profile_Settings::save_user_settings()`
+
+**Fixed:**
+
+* Fix logical bug in `Iac_Profile_Settings::get_user_settings()`. Default opt-in setting is now evaluated correctly.
 * Fix bug in scheduled mail dispatching
+* Fixed bug in notification string in settings section
+* Fixed bug in de_DE translation
+* Fixed bug in `Iac_Profile_Settings::save_user_settings()`. Default opt-in setting is now evaluated correctly.
 
 = 0.0.7 =
 * Send mails in smaller groups and schedule sending of groups
