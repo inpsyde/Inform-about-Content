@@ -2,7 +2,7 @@
 Contributors: inpsyde, Bueltge, dnaber-de, derpixler
 Tags: mail, comment, post
 Requires at least: 3.0
-Tested up to: 4.5.3
+Tested up to: 4.7
 Stable tag: 0.0.7
 
 Informs all users of a blog about a new post and approved comments via email
@@ -10,9 +10,11 @@ Informs all users of a blog about a new post and approved comments via email
 == Description ==
 Plugin which sends emails to us from WordPress, for comments and new posts, except our own comments and posts. You can disable the option in your profile. At default, all user are receiving an email except the author.
 
-**Made by [Inpsyde](http://inpsyde.com) &middot; We love WordPress**
+= Crafted by Inpsyde =
+The team at [Inpsyde](http://inpsyde.com) is engineering the web and WordPress since 2006.
 
-Have a look at the premium plugins in our [market](http://marketpress.com).
+= Donation? =
+You want to donate - we prefer a positive review, not more.
 
 = Bugs, technical hints or contribute =
 Please give us feedback, contribute and file technical bugs on [GitHub Repo](https://github.com/bueltge/Inform-about-Content).
