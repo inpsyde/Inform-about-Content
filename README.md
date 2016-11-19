@@ -11,7 +11,8 @@ Informs all users of a blog about a new post and approved comments via email
 ## Description
 Plugin which sends emails to us from WordPress, for comments and new posts, except our own comments and posts. You can disable the option in your profile. At default, all user are receiving an email except the author.
 
-### Made by [Inpsyde](http://inpsyde.com) · We love WordPress
+### Crafted by Inpsyde
+The team at [Inpsyde](https://inpsyde.com) is engineering the web and WordPress since 2006.
 
 
 ## Installation
